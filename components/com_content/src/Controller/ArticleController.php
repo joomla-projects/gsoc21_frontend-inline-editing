@@ -410,14 +410,6 @@ class ArticleController extends FormController
 	 * @return void
 	 *
 	 * @since __add_version___
-	 *
-	 * TODO:
-	 * 1. Get the right id even when there are multiple articles on the same page.
-	 * 		Handle this in javascript code.
-	 *
-	 * Questions:
-	 * 1. Can I use some other component to make this code reusable?
-	 * 		Or is there already a component for this task?
 	 */
 	public function saveTitle()
 	{
@@ -428,20 +420,19 @@ class ArticleController extends FormController
 
 		if (!$this->allowEdit(array("id" => $articleId)))
 		{
-			echo new JsonResponse(array("Saved" => false));
+			echo new JsonResponse(array("saved" => false));
 		}
 		else
 		{
-			// Q2. What should I use here to get the right model?
 			$model = $this->getModel($this->context);
 
 			if ($model->saveTitle($articleId, $articleTitle))
 			{
-				echo new JsonResponse(array("Saved" => true));
+				echo new JsonResponse(array("saved" => true));
 			}
 			else
 			{
-				echo new JsonResponse(array("Saved" => false));
+				echo new JsonResponse(array("saved" => false));
 			}
 		}
 	}
