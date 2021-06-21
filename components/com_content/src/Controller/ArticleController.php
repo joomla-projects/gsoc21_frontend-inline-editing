@@ -428,7 +428,7 @@ class ArticleController extends FormController
 
 			if ($model->saveTitle($articleId, $articleTitle))
 			{
-				echo new JsonResponse(['saved' => false, 'permission' => true]);
+				echo new JsonResponse(['saved' => true, 'permission' => true]);
 			}
 			else
 			{
