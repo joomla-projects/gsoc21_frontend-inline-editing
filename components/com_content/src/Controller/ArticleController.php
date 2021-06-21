@@ -415,12 +415,12 @@ class ArticleController extends FormController
 	{
 		$this->checkToken();
 
-		$articleId 		= $this->input->getInt('a_id');
-		$articleTitle	= $this->input->getString('a_title');
+		$articleId = $this->input->getInt('a_id');
+		$articleTitle = $this->input->getString('a_title');
 
-		if (!$this->allowEdit(array("id" => $articleId)))
+		if (!$this->allowEdit(['id' => $articleId]))
 		{
-			echo new JsonResponse(array("saved" => false));
+			echo new JsonResponse(['saved' => false, 'permission' => false]);
 		}
 		else
 		{
@@ -428,11 +428,11 @@ class ArticleController extends FormController
 
 			if ($model->saveTitle($articleId, $articleTitle))
 			{
-				echo new JsonResponse(array("saved" => true));
+				echo new JsonResponse(['saved' => false, 'permission' => true]);
 			}
 			else
 			{
-				echo new JsonResponse(array("saved" => false));
+				echo new JsonResponse(['saved' => false, 'permission' => true]);
 			}
 		}
 	}
