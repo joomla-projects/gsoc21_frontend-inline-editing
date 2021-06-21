@@ -459,30 +459,26 @@ class ArticleModel extends ItemModel
 	 *
 	 * @return  boolean True if successful, false otherwise
 	 *
-	 * @since ___add_version___
+	 * @since __DEPLOY_VERSION__
 	 */
-	public function saveTitle($pk = null, $title = null)
+	public function saveTitle(int $pk = null, string $title = null): bool
 	{
 		if ($pk == null || $title == null)
 		{
 			return false;
 		}
 
-		$pk = (string) $pk;
+		$pk    = (string) $pk;
 		$title = (string) $title;
 
-		$db = $this->getDbo();
+		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
 
 		// Fields to update.
-		$fields = array(
-			$db->quoteName('title') . ' = ' . $db->quote($title),
-		);
+		$fields = [ $db->quoteName('title') . ' = ' . $db->quote($title) ];
 
 		// Conditions for which records should be updated.
-		$conditions = array(
-			$db->quoteName('id') . ' = ' . $pk,
-		);
+		$conditions = [ $db->quoteName('id') . ' = ' . $pk ];
 
 		$query->update($db->quoteName('#__content'))->set($fields)->where($conditions);
 

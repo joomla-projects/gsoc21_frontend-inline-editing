@@ -409,7 +409,7 @@ class ArticleController extends FormController
 	 *
 	 * @return void
 	 *
-	 * @since __add_version___
+	 * @since __DEPLOY_VERSION__
 	 */
 	public function saveTitle()
 	{
