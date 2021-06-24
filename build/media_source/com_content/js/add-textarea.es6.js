@@ -8,37 +8,64 @@
       return;
     }
 
+    const { icon } = Joomla.getOptions('add-textarea');
+
     const headline = contentDiv.querySelector('[itemprop="headline"]');
-    const titleInput = document.createElement('textarea');
-    if (!titleInput || !headline)
+    const textArea = document.createElement('textarea');
+    const loader = document.createElement('img');
+    const wrap = document.createElement('div');
+    if (!icon || !loader || !headline || !textArea || !wrap)
     {
       return;
     }
 
     const oldTitle = headline.innerText;
 
-    titleInput.value = oldTitle;
-    titleInput.className = 'd-none';
-    titleInput.rows = 1;
-    titleInput.style.width = '100%';
+    // TextArea field
+    textArea.value = oldTitle;
+    textArea.rows = 1;
+    textArea.style.width = '100%';
 
-    headline.parentNode.insertBefore(titleInput, headline.nextSibling)
+    // Loading icon
+    loader.src = icon;
+    loader.width = 30;
+    loader.height = 30;
+    Object.assign(loader.style, {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      margin: 'auto'
+    });
+    loader.classList.add('d-none');
 
+    // Wrap textArea and loader inside a div
+    wrap.classList.add('d-none');
+    wrap.style.position = 'relative';
+    wrap.appendChild(textArea);
+    wrap.appendChild(loader);
+
+    // Add wrap to the DOM
+    headline.parentNode.insertBefore(wrap, headline.nextSibling)
+
+    // Show textArea when title header is clicked
     headline.addEventListener('click', function () {
-      titleInput.value = headline.innerText;
+      textArea.value = headline.innerText;
       headline.classList.add('d-none');
-      titleInput.classList.remove('d-none');
-      titleInput.focus();
+      wrap.classList.remove('d-none');
+      textArea.focus();
     });
 
-    titleInput.addEventListener('focusout', function () {
-      const newTitle = titleInput.value;
-      titleInput.disabled = true;
+    // Send Ajax request and update front-end when user focuses out of textArea
+    textArea.addEventListener('focusout', function () {
+      const newTitle = textArea.value;
+      textArea.disabled = true;
 
       const url = `index.php?option=com_content&task=article.saveTitle&format=json`;
       const data = `a_id=${articleId}&a_title=${newTitle}&${Joomla.getOptions('csrf.token', '')}=1`;
 
-      document.body.appendChild(document.createElement('joomla-core-loader'));
+      loader.classList.remove('d-none');
 
       Joomla.request({
         url,
@@ -73,15 +100,11 @@
       });
 
       function AjaxEnd() {
-        titleInput.classList.add('d-none');
-        headline.classList.remove('d-none');
-        titleInput.disabled = false;
+        wrap.classList.add('d-none');
+        loader.classList.add('d-none');
+        textArea.disabled = false;
 
-        var spinner = document.querySelector('joomla-core-loader');
-        if (spinner)
-        {
-          spinner.parentNode.removeChild(spinner);
-        }
+        headline.classList.remove('d-none');
       }
     });
   }

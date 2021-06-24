@@ -36,14 +36,20 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 // Enable frontend inline editing
 if ($canEdit)
 {
+	// Load script
 	$wa = $this->document->getWebAssetManager();
 	$wa->useScript('com_content.add-textarea');
-	$wa->useScript('webcomponent.core-loader');
+
+	// Javascript method call with current article id as parameter
 	$script = <<<JS
 	Joomla.addTextArea({$this->item->id});
 	JS;
 	$wa->addInlineScript($script, [], ['type' => 'module']);
 	
+	// Add script options
+	$this->document->addScriptOptions('add-textarea', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+
+	// Register messages to be used by javascript code
 	Text::script('COM_CONTENT_SERVER_ERROR');
 	Text::script('COM_CONTENT_NOT_ALLOWED');
 	Text::script('COM_CONTENT_SAVE_ERROR');
