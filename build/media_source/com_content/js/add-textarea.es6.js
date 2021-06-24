@@ -3,8 +3,7 @@
 
   Joomla.addTextArea = (articleId) => {
     const contentDiv = document.getElementsByClassName('com-content-article')[0];
-    if(!contentDiv || !articleId)
-    {
+    if (!contentDiv || !articleId) {
       return;
     }
 
@@ -14,8 +13,7 @@
     const textArea = document.createElement('textarea');
     const loader = document.createElement('img');
     const wrap = document.createElement('div');
-    if (!icon || !loader || !headline || !textArea || !wrap)
-    {
+    if (!icon || !loader || !headline || !textArea || !wrap) {
       return;
     }
 
@@ -36,7 +34,7 @@
       bottom: 0,
       left: 0,
       right: 0,
-      margin: 'auto'
+      margin: 'auto',
     });
     loader.classList.add('d-none');
 
@@ -47,22 +45,30 @@
     wrap.appendChild(loader);
 
     // Add wrap to the DOM
-    headline.parentNode.insertBefore(wrap, headline.nextSibling)
+    headline.parentNode.insertBefore(wrap, headline.nextSibling);
 
     // Show textArea when title header is clicked
-    headline.addEventListener('click', function () {
+    headline.addEventListener('click', () => {
       textArea.value = headline.innerText;
       headline.classList.add('d-none');
       wrap.classList.remove('d-none');
       textArea.focus();
     });
 
+    const AjaxEnd = () => {
+      wrap.classList.add('d-none');
+      loader.classList.add('d-none');
+      textArea.disabled = false;
+
+      headline.classList.remove('d-none');
+    };
+
     // Send Ajax request and update front-end when user focuses out of textArea
-    textArea.addEventListener('focusout', function () {
+    textArea.addEventListener('focusout', () => {
       const newTitle = textArea.value;
       textArea.disabled = true;
 
-      const url = `index.php?option=com_content&task=article.saveTitle&format=json`;
+      const url = 'index.php?option=com_content&task=article.saveTitle&format=json';
       const data = `a_id=${articleId}&a_title=${newTitle}&${Joomla.getOptions('csrf.token', '')}=1`;
 
       loader.classList.remove('d-none');
@@ -72,22 +78,14 @@
         method: 'POST',
         data,
         onSuccess: (response) => {
-          response = JSON.parse(response);
+          const responseJson = JSON.parse(response);
 
-          if (response.data.saved == true)
-          {
+          if (responseJson.data.saved === true) {
             headline.innerHTML = newTitle;
-          }
-          else
-          {
-            if(response.data.permission == false)
-            {
-              Joomla.renderMessages({ error: [Joomla.Text._('COM_CONTENT_NOT_ALLOWED')] });
-            }
-            else
-            {
-              Joomla.renderMessages({ error: [Joomla.Text._('COM_CONTENT_SAVE_ERROR')] });
-            }
+          } else if (responseJson.data.permission === false) {
+            Joomla.renderMessages({ error: [Joomla.Text._('COM_CONTENT_NOT_ALLOWED')] });
+          } else {
+            Joomla.renderMessages({ error: [Joomla.Text._('COM_CONTENT_SAVE_ERROR')] });
           }
 
           AjaxEnd();
@@ -96,17 +94,8 @@
           Joomla.renderMessages({ error: [Joomla.Text._('COM_CONTENT_SERVER_ERROR')] });
 
           AjaxEnd();
-        }
+        },
       });
-
-      function AjaxEnd() {
-        wrap.classList.add('d-none');
-        loader.classList.add('d-none');
-        textArea.disabled = false;
-
-        headline.classList.remove('d-none');
-      }
     });
-  }
+  };
 })();
-  
