@@ -168,11 +168,23 @@
       }
     },
     {
+      "name": "com_content.add-textarea.es5",
+      "type": "script",
+      "uri": "com_content/add-textarea-es5.min.js",
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "nomodule": true,
+        "defer": true
+      }
+    },
+    {
       "name": "com_content.add-textarea",
       "type": "script",
       "uri": "com_content/add-textarea.min.js",
       "dependencies": [
-        "com_content/add-textarea.es5"
+        "com_content.add-textarea.es5"
       ],
       "attributes": {
         "type": "module"

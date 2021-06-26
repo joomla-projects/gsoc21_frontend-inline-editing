@@ -453,10 +453,10 @@ class ArticleModel extends ItemModel
 	/**
 	 * Save Title of an article
 	 *
-	 * @param   integer $pk     Article id
-	 * @param   string  $title  New title of the article
+	 * @param   integer  $pk     Article id
+	 * @param   string   $title  New title of the article
 	 *
-	 * @return  boolean True if successful, false otherwise
+	 * @return  boolean  True if successful, false otherwise
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
