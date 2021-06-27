@@ -68,7 +68,7 @@
       const newTitle = textArea.value;
       textArea.disabled = true;
 
-      const url = 'index.php?option=com_content&task=article.saveTitle&format=json';
+      const url = '?option=com_content&task=article.saveTitle&format=json';
       const data = `a_id=${articleId}&a_title=${newTitle}&${Joomla.getOptions('csrf.token', '')}=1`;
 
       loader.classList.remove('d-none');
