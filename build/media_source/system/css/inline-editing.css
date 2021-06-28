@@ -1,0 +1,13 @@
+@keyframes highlight-error-animation {
+    0% {
+        background-color: red;
+    }
+    100% {
+        background-color: white;
+    }
+}
+
+.highlight-error {
+    border-radius: 2px;
+    animation: highlight-error-animation 1000ms ease-out;
+}

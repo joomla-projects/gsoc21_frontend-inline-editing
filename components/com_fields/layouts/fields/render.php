@@ -9,6 +9,9 @@
 defined('_JEXEC') or die;
 
 use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 // Check if we have all the data
 if (!array_key_exists('item', $displayData) || !array_key_exists('context', $displayData))
@@ -49,6 +52,22 @@ if (empty($fields))
 	return;
 }
 
+$canEdit = $item->params->get('access-edit');
+if($canEdit)
+{
+	// Load inline editing script
+	$doc = Factory::getDocument();
+	$doc->getWebAssetManager()
+		->useStyle('webcomponent.inline-editing')
+		->useScript('webcomponent.inline-editing');
+	// Add script options
+	$doc->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+	
+	// Register messages to be used by javascript code
+	Text::script('COM_FIELDS_SERVER_ERROR');
+	Text::script('COM_FIElDS_SAVE_ERROR');
+}
+
 $output = array();
 
 foreach ($fields as $field)
@@ -61,7 +80,7 @@ foreach ($fields as $field)
 
 	$class = $field->params->get('render_class');
 	$layout = $field->params->get('layout', 'render');
-	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field));
+	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field, 'item' => $item));
 
 	// If the content is empty do nothing
 	if (trim($content) === '')

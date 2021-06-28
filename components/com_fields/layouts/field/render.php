@@ -15,6 +15,7 @@ if (!array_key_exists('field', $displayData))
 	return;
 }
 
+$item = $displayData['item'];
 $field = $displayData['field'];
 $label = Text::_($field->label);
 $value = $field->value;
@@ -28,6 +29,10 @@ if ($value == '')
 	return;
 }
 
+$canEdit = $item->params->get('access-edit');
+// Replace onclick with JavaScript addEventListner
+$onclickEvent = ( $field->type == 'text' ? 'onclick="Joomla.inlineEditing({' . 'context : \'custom_text_field\', itemId : ' . $item->id . ', fieldId : ' . $field->id . ', _this : this})"' : '' );
+
 ?>
 <?php if ($showLabel == 1) : ?>
 	<span class="field-label <?php echo $labelClass; ?>"><?php echo htmlentities($label, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?>: </span>
@@ -35,7 +40,7 @@ if ($value == '')
 <?php if ($prefix) : ?>
 	<span class="field-prefix"><?php echo htmlentities($prefix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>
-<span class="field-value"><?php echo $value; ?></span>
+<span class="field-value"  <?php echo $canEdit ? $onclickEvent : '' ?> ><?php echo $value; ?></span>
 <?php if ($suffix) : ?>
 	<span class="field-suffix"><?php echo htmlentities($suffix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>
