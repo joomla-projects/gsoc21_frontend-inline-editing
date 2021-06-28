@@ -35,22 +35,23 @@ class FieldController extends \Joomla\CMS\MVC\Controller\BaseController
 		$fieldId = $this->input->getInt('field_id');
 		$itemId = $this->input->getInt('item_id');
 		$value = $this->input->getString('value');
-		
-		if(!$fieldId or !$itemId or !$value)
+
+		if (!$fieldId || !$itemId || !$value)
 		{
 			echo new JsonResponse(['saved' => false]);
+
 			return;
 		}
 
 		$model = $this->getModel('field', 'Administrator');
 
-		if($model and $model->setFieldValue($fieldId, $itemId, $value))
+		if ($model && $model->setFieldValue($fieldId, $itemId, $value))
 		{
 			echo new JsonResponse(['saved' => true]);
 		}
 		else
 		{
 			echo new JsonResponse(['saved' => false]);
-		}		
+		}
 	}
 }

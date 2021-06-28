@@ -62,7 +62,7 @@ if($canEdit)
 		->useScript('webcomponent.inline-editing');
 	// Add script options
 	$doc->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
-	
+
 	// Register messages to be used by javascript code
 	Text::script('COM_FIELDS_SERVER_ERROR');
 	Text::script('COM_FIElDS_SAVE_ERROR');
