@@ -611,6 +611,12 @@ class FieldModel extends AdminModel
 	public function setFieldValue($fieldId, $itemId, $value)
 	{
 		$field  = $this->getItem($fieldId);
+
+		if (!$field)
+		{
+			return false;
+		}
+
 		$params = $field->params;
 
 		if (is_array($params))
@@ -619,7 +625,7 @@ class FieldModel extends AdminModel
 		}
 
 		// Don't save the value when the user is not authorized to change it
-		if (!$field || !FieldsHelper::canEditFieldValue($field))
+		if (!FieldsHelper::canEditFieldValue($field))
 		{
 			return false;
 		}
