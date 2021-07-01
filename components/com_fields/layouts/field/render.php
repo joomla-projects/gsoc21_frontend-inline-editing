@@ -9,6 +9,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 if (!array_key_exists('field', $displayData))
 {
@@ -30,8 +31,14 @@ if ($value == '')
 }
 
 $canEdit = $item->params->get('access-edit');
-// Replace onclick with JavaScript addEventListner
-$onclickEvent = ( $field->type == 'text' ? 'onclick="Joomla.inlineEditing({' . 'context : \'custom_text_field\', itemId : ' . $item->id . ', fieldId : ' . $field->id . ', _this : this})"' : '' );
+$dataAttributes = '';
+$inlineEditClass = '';
+
+if($canEdit && $field->type == 'text')
+{
+	$dataAttributes = HTMLHelper::_('convertToDataAttributes', 'custom_text_field', [ 'item_id' => $item->id, 'field_id' => $field->id ]);
+	$inlineEditClass = HTMLHelper::_('getInlineEditingClass');
+}
 
 ?>
 <?php if ($showLabel == 1) : ?>
@@ -40,7 +47,7 @@ $onclickEvent = ( $field->type == 'text' ? 'onclick="Joomla.inlineEditing({' . '
 <?php if ($prefix) : ?>
 	<span class="field-prefix"><?php echo htmlentities($prefix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>
-<span class="field-value"  <?php echo $canEdit ? $onclickEvent : '' ?> ><?php echo $value; ?></span>
+<span class="field-value <?php echo $inlineEditClass ?> "  <?php echo $dataAttributes ?> ><?php echo $value; ?></span>
 <?php if ($suffix) : ?>
 	<span class="field-suffix"><?php echo htmlentities($suffix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>

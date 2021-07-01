@@ -1220,6 +1220,45 @@ abstract class HTMLHelper
 	}
 
 	/**
+	 * Add data-attributes for the inline editing.
+	 *
+	 * @param   string  $context  article_titile, article_body, custom_text_field, etc
+	 * @param   mixed   $attribs  Additional HTML attributes required to make Ajax Request
+	 *                            Example: In case of Article title,
+	 *                                      $attribs = [a_id => 23].
+	 *
+	 * @return  string  Formatted Data attributes
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public static function convertToDataAttributes(string $context, $attribs = [])
+	{
+		if (!$context)
+		{
+			return;
+		}
+
+		$return  = 'data-context="' . $context . '" ';
+
+		foreach ($attribs as $key => $value)
+		{
+			$return = $return . 'data-' . $key . '="' . $value . '" ';
+		}
+
+		return $return;
+	}
+
+	/**
+	 * @return   string  Returns inline-editing class name
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public static function getInlineEditingClass()
+	{
+		return 'inline-editable';
+	}
+
+	/**
 	 * Add a directory where HTMLHelper should search for helpers. You may
 	 * either pass a string or an array of directories.
 	 *

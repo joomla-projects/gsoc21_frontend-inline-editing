@@ -11,3 +11,9 @@
     border-radius: 2px;
     animation: highlight-error-animation 1000ms ease-out;
 }
+
+.inline-editable:hover {
+    background-color: #e6edf8;
+    border: 0.5px solid #464a52;
+    border-radius: 2px;
+}

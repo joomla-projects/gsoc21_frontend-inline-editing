@@ -72,7 +72,7 @@
   };
 
   // Handle custom fields
-  const FieldHelper = ({ itemId, fieldId, _this }) => {
+  const FieldHelper = (itemId, fieldId, _this) => {
     const oldContent = _this.innerText;
 
     const wrapAndTextArea = GetTextAreaWrapper(oldContent);
@@ -102,6 +102,7 @@
     });
 
     // Send Ajax request and update front-end when user focuses out of textArea
+    // TODO: Implement save button
     textArea.addEventListener('focusout', () => {
       const AjaxCall = () => {
         const newValue = textArea.value;
@@ -110,11 +111,6 @@
 
         textArea.disabled = true;
         loader.classList.remove('d-none');
-
-        const AjaxEnd = () => {
-          wrap.remove();
-          _this.classList.remove('d-none');
-        };
 
         Joomla.request({
           url,
@@ -128,12 +124,13 @@
             } else {
               Error(_this);
             }
-
-            AjaxEnd();
           },
           onError: () => {
             Error(_this);
-            AjaxEnd();
+          },
+          onComplete: () => {
+            wrap.remove();
+            _this.classList.remove('d-none');
           },
         });
       };
@@ -148,16 +145,30 @@
   };
 
   // First argument/context: article_title, article_content, custom_text_field, module, etc
-  Joomla.inlineEditing = (params) => {
-    const { context } = params;
+  const initInlineEditing = () => {
+    const elements = document.querySelectorAll('.inline-editable');
 
-    switch (context) {
-      case 'custom_text_field':
-        FieldHelper(params);
-        break;
+    elements.forEach((element) => {
+      const { context } = element.dataset;
+      if (!context) {
+        return;
+      }
 
-      default:
-        break;
-    }
+      switch (context) {
+        case 'custom_text_field': {
+          const itemId = element.dataset.item_id;
+          const fieldId = element.dataset.field_id;
+          if (!itemId || !fieldId) {
+            return;
+          }
+          element.addEventListener('click', () => FieldHelper(itemId, fieldId, element));
+          break;
+        }
+        default:
+          break;
+      }
+    });
   };
+
+  document.addEventListener('DOMContentLoaded', initInlineEditing);
 })();
