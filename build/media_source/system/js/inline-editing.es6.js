@@ -14,6 +14,9 @@
 
     const cancelButton = document.createElement('button');
     const cancelButtonIcon = document.createElement('span');
+    const saveButton = document.createElement('button');
+    const saveButtonIcon = document.createElement('span');
+    const buttons = document.createElement('span');
 
     if (!icon || !loader || !textArea || !wrap || !cancelButton || !cancelButtonIcon) {
       return null;
@@ -30,10 +33,28 @@
     cancelButton.type = 'button';
     cancelButton.classList.add('btn-danger');
     Object.assign(cancelButton.style, {
-      float: 'left',
       margin: '2px',
     });
     cancelButton.appendChild(cancelButtonIcon);
+
+    // Save button
+    saveButtonIcon.classList.add('icon-check');
+    saveButtonIcon.setAttribute('aria-hidden', 'true');
+    saveButton.type = 'button';
+    saveButton.classList.add('btn-primary');
+    Object.assign(saveButton.style, {
+      margin: '2px',
+    });
+    saveButton.appendChild(saveButtonIcon);
+
+    buttons.appendChild(cancelButton);
+    buttons.appendChild(saveButton);
+    Object.assign(buttons.style, {
+      float: 'left',
+      display: 'flex',
+      'flex-direction': 'column',
+      'align-items': 'center',
+    });
 
     // Loading icon
     loader.src = icon;
@@ -52,7 +73,7 @@
     // Wrap textArea and loader inside a div
     wrap.style.position = 'relative';
     wrap.style.display = 'inline-block';
-    wrap.appendChild(cancelButton);
+    wrap.appendChild(buttons);
     wrap.appendChild(textArea);
     wrap.appendChild(loader);
 
@@ -61,6 +82,7 @@
       textArea,
       loader,
       cancelButton,
+      saveButton,
     };
   };
 
@@ -84,6 +106,7 @@
       textArea,
       loader,
       cancelButton,
+      saveButton,
     } = wrapAndTextArea;
 
     // Add wrap to the DOM
@@ -103,12 +126,16 @@
 
     // Send Ajax request and update front-end when user focuses out of textArea
     // TODO: Implement save button
-    textArea.addEventListener('focusout', () => {
+    saveButton.addEventListener('click', () => {
       const AjaxCall = () => {
         const newValue = textArea.value;
         const url = '?option=com_fields&task=Field.saveField&format=json';
         const data = `field_id=${fieldId}&item_id=${itemId}&value=${newValue}&${Joomla.getOptions('csrf.token', '')}=1`;
 
+        saveButton.disabled = true;
+        cancelButton.disabled = true;
+        saveButton.style.backgroundColor = 'grey';
+        cancelButton.style.backgroundColor = 'grey';
         textArea.disabled = true;
         loader.classList.remove('d-none');
 
