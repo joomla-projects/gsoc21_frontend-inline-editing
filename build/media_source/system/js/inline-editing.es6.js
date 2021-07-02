@@ -162,12 +162,10 @@
         });
       };
 
-      setTimeout(() => {
-        if (!document.hasFocus() || cancel) {
-          return;
-        }
-        AjaxCall();
-      }, 200);
+      if (!document.hasFocus() || cancel) {
+        return;
+      }
+      AjaxCall();
     });
   };
 
