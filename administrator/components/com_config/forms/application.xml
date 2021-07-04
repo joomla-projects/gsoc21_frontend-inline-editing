@@ -1028,6 +1028,18 @@
 			<option value="1">COM_CONFIG_FRONTEDITING_MODULES</option>
 			<option value="0">JNONE</option>
 		</field>
+		
+		<field
+			name="frontinlineediting"
+			type="radio"
+			label="COM_CONFIG_FRONTINLINEEDITING_LABEL"
+			layout="joomla.form.field.radio.switcher"
+			default="0"
+			filter="boolean"
+			>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
 
 		<field
 			name="editor"
