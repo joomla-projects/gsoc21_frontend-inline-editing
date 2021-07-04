@@ -1233,29 +1233,17 @@ abstract class HTMLHelper
 	 */
 	public static function convertToDataAttributes(string $context, $attribs = [])
 	{
-		if (!$context)
-		{
-			return;
-		}
-
-		$return  = 'data-context="' . $context . '" ';
+		$return  = 'data-inline_url="?option=' . $context . '&task=Field.FEInlineEdition&format=json" ';
+		$data = '';
 
 		foreach ($attribs as $key => $value)
 		{
-			$return = $return . 'data-' . $key . '="' . $value . '" ';
+			$data = $data . $key . '=' . $value . '&';
 		}
 
-		return $return;
-	}
+		$return = $return . ' data-inline_data="' . $data . '"';
 
-	/**
-	 * @return   string  Returns inline-editing class name
-	 *
-	 * @since __DEPLOY_VERSION__
-	 */
-	public static function getInlineEditingClass()
-	{
-		return 'inline-editable';
+		return $return;
 	}
 
 	/**

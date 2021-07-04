@@ -28,7 +28,7 @@ class FieldController extends \Joomla\CMS\MVC\Controller\BaseController
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	public function saveField()
+	public function FEInlineEdition()
 	{
 		$this->checkToken();
 

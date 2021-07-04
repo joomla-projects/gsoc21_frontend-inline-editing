@@ -34,10 +34,10 @@ $canEdit = $item->params->get('access-edit');
 $dataAttributes = '';
 $inlineEditClass = '';
 
-if($canEdit && $field->type == 'text')
+if ($canEdit && $field->type == 'text')
 {
-	$dataAttributes = HTMLHelper::_('convertToDataAttributes', 'custom_text_field', [ 'item_id' => $item->id, 'field_id' => $field->id ]);
-	$inlineEditClass = HTMLHelper::_('getInlineEditingClass');
+	$dataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_fields', [ 'item_id' => $item->id, 'field_id' => $field->id ]);
+	$inlineEditClass = 'inline-editable-text';
 }
 
 ?>

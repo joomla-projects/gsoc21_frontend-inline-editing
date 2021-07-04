@@ -94,8 +94,8 @@
   };
 
   // Handle custom fields
-  const FieldHelper = (itemId, fieldId, _this) => {
-    const oldContent = _this.innerText;
+  const addTextArea = (url, data, element) => {
+    const oldContent = element.innerText;
 
     const wrapAndTextArea = GetTextAreaWrapper(oldContent);
     if (!wrapAndTextArea) {
@@ -110,88 +110,86 @@
     } = wrapAndTextArea;
 
     // Add wrap to the DOM
-    _this.parentNode.insertBefore(wrap, _this.nextSibling);
+    element.parentNode.insertBefore(wrap, element.nextSibling);
 
     // Hide custom field value and show a text area
-    _this.classList.add('d-none');
+    element.classList.add('d-none');
     textArea.focus();
 
-    let cancel = false;
     // Restore original element on Cancel
     cancelButton.addEventListener('click', () => {
-      cancel = true;
       wrap.remove();
-      _this.classList.remove('d-none');
+      element.classList.remove('d-none');
     });
 
     // Send Ajax request and update front-end when user focuses out of textArea
-    // TODO: Implement save button
     saveButton.addEventListener('click', () => {
-      const AjaxCall = () => {
-        const newValue = textArea.value;
-        const url = '?option=com_fields&task=Field.saveField&format=json';
-        const data = `field_id=${fieldId}&item_id=${itemId}&value=${newValue}&${Joomla.getOptions('csrf.token', '')}=1`;
+      const newValue = textArea.value;
+      const dataWithValue = `${data}value=${newValue}`;
 
-        saveButton.disabled = true;
-        cancelButton.disabled = true;
-        saveButton.style.backgroundColor = 'grey';
-        cancelButton.style.backgroundColor = 'grey';
-        textArea.disabled = true;
-        loader.classList.remove('d-none');
+      saveButton.disabled = true;
+      cancelButton.disabled = true;
+      saveButton.style.backgroundColor = 'grey';
+      cancelButton.style.backgroundColor = 'grey';
+      textArea.disabled = true;
+      loader.classList.remove('d-none');
 
-        Joomla.request({
-          url,
-          method: 'POST',
-          data,
-          onSuccess: (response) => {
-            const responseJson = JSON.parse(response);
+      Joomla.request({
+        url,
+        method: 'POST',
+        data: dataWithValue,
+        onSuccess: (response) => {
+          const responseJson = JSON.parse(response);
 
-            if (responseJson.data.saved === true) {
-              _this.innerHTML = newValue;
-            } else {
-              Error(_this);
-            }
-          },
-          onError: () => {
-            Error(_this);
-          },
-          onComplete: () => {
-            wrap.remove();
-            _this.classList.remove('d-none');
-          },
-        });
-      };
-
-      if (!document.hasFocus() || cancel) {
-        return;
-      }
-      AjaxCall();
+          if (responseJson.data.saved === true) {
+            element.innerHTML = newValue;
+          } else {
+            Error(element);
+          }
+        },
+        onError: () => {
+          Error(element);
+        },
+        onComplete: () => {
+          wrap.remove();
+          element.classList.remove('d-none');
+        },
+      });
     });
   };
 
-  // First argument/context: article_title, article_content, custom_text_field, module, etc
+  const functionMap = {
+    'inline-editable-text': addTextArea,
+  };
+
+  // First argument/context: inline-editable-text, inline-editable-color-field, etc
   const initInlineEditing = () => {
-    const elements = document.querySelectorAll('.inline-editable');
+    const elements = document.querySelectorAll('[class*="inline-editable"]');
+    // console.log(elements);
 
     elements.forEach((element) => {
-      const { context } = element.dataset;
-      if (!context) {
+      let type;
+      element.classList.forEach((value) => {
+        if (value.startsWith('inline-editable')) {
+          type = value;
+        }
+      });
+
+      const url = element.dataset.inline_url;
+      let data = element.dataset.inline_data;
+      // console.log(type, url, data);
+      if (!type || !url || !data) {
         return;
       }
 
-      switch (context) {
-        case 'custom_text_field': {
-          const itemId = element.dataset.item_id;
-          const fieldId = element.dataset.field_id;
-          if (!itemId || !fieldId) {
-            return;
-          }
-          element.addEventListener('click', () => FieldHelper(itemId, fieldId, element));
-          break;
-        }
-        default:
-          break;
+      const currentMethod = functionMap[type];
+      if (!currentMethod) {
+        return;
       }
+
+      data = `${data}${Joomla.getOptions('csrf.token', '')}=1&`;
+
+      element.addEventListener('click', () => currentMethod(url, data, element));
     });
   };
 
