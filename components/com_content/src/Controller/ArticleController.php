@@ -418,7 +418,7 @@ class ArticleController extends FormController
 		$articleId = $this->input->getInt('a_id');
 		$articleTitle = $this->input->getString('value');
 
-		if (!$this->allowEdit(['id' => $articleId]))
+		if (!$articleId || !$articleTitle || !$this->allowEdit(['id' => $articleId]))
 		{
 			echo new JsonResponse(['saved' => false]);
 		}

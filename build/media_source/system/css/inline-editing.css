@@ -1,19 +1,4 @@
-@keyframes highlight-error-animation {
-    0% {
-        background-color: red;
-    }
-    100% {
-        background-color: white;
-    }
-}
-
-.highlight-error {
-    border-radius: 2px;
-    animation: highlight-error-animation 1000ms ease-out;
-}
-
 .inline-editable-text:hover {
-    background-color: #e6edf8;
     border: 0.5px solid #464a52;
     border-radius: 2px;
 }
