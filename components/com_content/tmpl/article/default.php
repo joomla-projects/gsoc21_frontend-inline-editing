@@ -32,6 +32,28 @@ $assocParam        = (Associations::isEnabled() && $params->get('show_associatio
 $currentDate       = Factory::getDate()->format('Y-m-d H:i:s');
 $isNotPublishedYet = $this->item->publish_up > $currentDate;
 $isExpired         = !is_null($this->item->publish_down) && $this->item->publish_down < $currentDate;
+
+// Enable frontend inline editing
+if ($canEdit)
+{
+	// Load script
+	$wa = $this->document->getWebAssetManager();
+	$wa->useScript('com_content.add-textarea');
+
+	// Javascript method call with current article id as parameter
+	$script = <<<JS
+	Joomla.addTextArea({$this->item->id});
+	JS;
+	$wa->addInlineScript($script, [], ['type' => 'module']);
+	
+	// Add script options
+	$this->document->addScriptOptions('add-textarea', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+
+	// Register messages to be used by javascript code
+	Text::script('COM_CONTENT_SERVER_ERROR');
+	Text::script('COM_CONTENT_NOT_ALLOWED');
+	Text::script('COM_CONTENT_SAVE_ERROR');
+}
 ?>
 <div class="com-content-article item-page<?php echo $this->pageclass_sfx; ?>" itemscope itemtype="https://schema.org/Article">
 	<meta itemprop="inLanguage" content="<?php echo ($this->item->language === '*') ? Factory::getApplication()->get('language') : $this->item->language; ?>">

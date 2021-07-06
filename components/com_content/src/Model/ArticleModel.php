@@ -451,6 +451,49 @@ class ArticleModel extends ItemModel
 	}
 
 	/**
+	 * Save Title of an article
+	 *
+	 * @param   integer  $pk     Article id
+	 * @param   string   $title  New title of the article
+	 *
+	 * @return  boolean  True if successful, false otherwise
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public function saveTitle(int $pk = null, string $title = null): bool
+	{
+		if ($pk == null || $title == null)
+		{
+			return false;
+		}
+
+		$pk    = (string) $pk;
+		$title = (string) $title;
+
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true);
+
+		// Fields to update.
+		$fields = [ $db->quoteName('title') . ' = ' . $db->quote($title) ];
+
+		// Conditions for which records should be updated.
+		$conditions = [ $db->quoteName('id') . ' = ' . $pk ];
+
+		$query->update($db->quoteName('#__content'))->set($fields)->where($conditions);
+
+		$db->setQuery($query);
+
+		$result = $db->execute();
+
+		if ($result)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Cleans the cache of com_content and content modules
 	 *
 	 * @param   string   $group     The cache group

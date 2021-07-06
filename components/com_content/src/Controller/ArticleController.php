@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Versioning\VersionableControllerTrait;
@@ -401,6 +402,39 @@ class ArticleController extends FormController
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Method to save article's title
+	 *
+	 * @return void
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public function saveTitle()
+	{
+		$this->checkToken();
+
+		$articleId = $this->input->getInt('a_id');
+		$articleTitle = $this->input->getString('a_title');
+
+		if (!$this->allowEdit(['id' => $articleId]))
+		{
+			echo new JsonResponse(['saved' => false, 'permission' => false]);
+		}
+		else
+		{
+			$model = $this->getModel($this->context);
+
+			if ($model->saveTitle($articleId, $articleTitle))
+			{
+				echo new JsonResponse(['saved' => true, 'permission' => true]);
+			}
+			else
+			{
+				echo new JsonResponse(['saved' => false, 'permission' => true]);
+			}
+		}
 	}
 
 	/**
