@@ -1222,7 +1222,8 @@ abstract class HTMLHelper
 	/**
 	 * Add data-attributes for the inline editing.
 	 *
-	 * @param   string  $context  article_titile, article_body, custom_text_field, etc
+	 * @param   string  $component  com_content, com_fields, etc
+	 * @param   string  $controller  Article, field, etc
 	 * @param   mixed   $attribs  Additional HTML attributes required to make Ajax Request
 	 *                            Example: In case of Article title,
 	 *                                      $attribs = [a_id => 23].
@@ -1231,9 +1232,9 @@ abstract class HTMLHelper
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	public static function convertToDataAttributes(string $context, $attribs = [])
+	public static function convertToDataAttributes(string $component, string $controller, $attribs = [])
 	{
-		$return  = 'data-inline_url="?option=' . $context . '&task=Field.FEInlineEdition&format=json" ';
+		$return  = 'data-inline_url="?option=' . $component . '&task=' . $controller . '.FEInlineEdition&format=json" ';
 		$data = '';
 
 		foreach ($attribs as $key => $value)

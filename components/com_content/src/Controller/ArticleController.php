@@ -411,16 +411,16 @@ class ArticleController extends FormController
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	public function saveTitle()
+	public function FEInlineEdition()
 	{
 		$this->checkToken();
 
 		$articleId = $this->input->getInt('a_id');
-		$articleTitle = $this->input->getString('a_title');
+		$articleTitle = $this->input->getString('value');
 
 		if (!$this->allowEdit(['id' => $articleId]))
 		{
-			echo new JsonResponse(['saved' => false, 'permission' => false]);
+			echo new JsonResponse(['saved' => false]);
 		}
 		else
 		{
@@ -428,11 +428,11 @@ class ArticleController extends FormController
 
 			if ($model->saveTitle($articleId, $articleTitle))
 			{
-				echo new JsonResponse(['saved' => true, 'permission' => true]);
+				echo new JsonResponse(['saved' => true]);
 			}
 			else
 			{
-				echo new JsonResponse(['saved' => false, 'permission' => true]);
+				echo new JsonResponse(['saved' => false]);
 			}
 		}
 	}

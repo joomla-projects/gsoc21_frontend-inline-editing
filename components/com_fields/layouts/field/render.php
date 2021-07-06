@@ -36,7 +36,7 @@ $inlineEditClass = '';
 
 if ($canEdit && $field->type == 'text')
 {
-	$dataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_fields', [ 'item_id' => $item->id, 'field_id' => $field->id ]);
+	$dataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_fields', 'field', [ 'item_id' => $item->id, 'field_id' => $field->id ]);
 	$inlineEditClass = 'inline-editable-text';
 }
 
@@ -47,7 +47,7 @@ if ($canEdit && $field->type == 'text')
 <?php if ($prefix) : ?>
 	<span class="field-prefix"><?php echo htmlentities($prefix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>
-<span class="field-value <?php echo $inlineEditClass ?> "  <?php echo $dataAttributes ?> ><?php echo $value; ?></span>
+<span class="field-value <?php echo $inlineEditClass ?>"  <?php echo $dataAttributes ?>><?php echo $value; ?></span>
 <?php if ($suffix) : ?>
 	<span class="field-suffix"><?php echo htmlentities($suffix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>

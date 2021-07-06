@@ -24,7 +24,7 @@
 
     // TextArea field
     textArea.value = oldContent;
-    textArea.rows = 1;
+    textArea.rows = 3;
     textArea.style.width = 'auto';
 
     // Cancel button
@@ -86,14 +86,16 @@
     };
   };
 
-  const Error = (element) => {
-    element.classList.add('highlight-error');
-    setTimeout(() => {
-      element.classList.remove('highlight-error');
-    }, 2000);
+  const Error = (saveButton, cancelButton, textArea, loader) => {
+    saveButton.disabled = false;
+    cancelButton.disabled = false;
+    saveButton.classList.add('btn-primary');
+    cancelButton.classList.add('btn-danger');
+    textArea.disabled = false;
+    loader.classList.add('d-none');
   };
 
-  // Handle custom fields
+  // Handle any text fields
   const addTextArea = (url, data, element) => {
     const oldContent = element.innerText;
 
@@ -129,8 +131,8 @@
 
       saveButton.disabled = true;
       cancelButton.disabled = true;
-      saveButton.style.backgroundColor = 'grey';
-      cancelButton.style.backgroundColor = 'grey';
+      saveButton.classList.remove('btn-primary');
+      cancelButton.classList.remove('btn-danger');
       textArea.disabled = true;
       loader.classList.remove('d-none');
 
@@ -143,16 +145,16 @@
 
           if (responseJson.data.saved === true) {
             element.innerHTML = newValue;
+            wrap.remove();
+            element.classList.remove('d-none');
           } else {
-            Error(element);
+            Error(saveButton, cancelButton, textArea, loader);
+            Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_FIELD_NOT_SAVED')] });
           }
         },
         onError: () => {
-          Error(element);
-        },
-        onComplete: () => {
-          wrap.remove();
-          element.classList.remove('d-none');
+          Error(saveButton, cancelButton, textArea, loader);
+          Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_SERVER_ERROR')] });
         },
       });
     });
@@ -165,7 +167,6 @@
   // First argument/context: inline-editable-text, inline-editable-color-field, etc
   const initInlineEditing = () => {
     const elements = document.querySelectorAll('[class*="inline-editable"]');
-    // console.log(elements);
 
     elements.forEach((element) => {
       let type;
@@ -177,7 +178,6 @@
 
       const url = element.dataset.inline_url;
       let data = element.dataset.inline_data;
-      // console.log(type, url, data);
       if (!type || !url || !data) {
         return;
       }

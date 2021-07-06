@@ -34,25 +34,24 @@ $isNotPublishedYet = $this->item->publish_up > $currentDate;
 $isExpired         = !is_null($this->item->publish_down) && $this->item->publish_down < $currentDate;
 
 // Enable frontend inline editing
+$ArticleDataAttributes = '';
+$inlineEditClass = '';
 if ($canEdit)
 {
 	// Load script
-	$wa = $this->document->getWebAssetManager();
-	$wa->useScript('com_content.add-textarea');
+	$this->document->getWebAssetManager()
+		->useStyle('webcomponent.inline-editing')
+		->useScript('webcomponent.inline-editing');
 
-	// Javascript method call with current article id as parameter
-	$script = <<<JS
-	Joomla.addTextArea({$this->item->id});
-	JS;
-	$wa->addInlineScript($script, [], ['type' => 'module']);
-	
+	$ArticleDataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_content', 'article', [ 'a_id' => $this->item->id ]);
+	$inlineEditClass = 'inline-editable-text';
+
 	// Add script options
-	$this->document->addScriptOptions('add-textarea', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+	$this->document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
 
 	// Register messages to be used by javascript code
-	Text::script('COM_CONTENT_SERVER_ERROR');
-	Text::script('COM_CONTENT_NOT_ALLOWED');
-	Text::script('COM_CONTENT_SAVE_ERROR');
+	Text::script('JGLOBAL_SERVER_ERROR');
+	Text::script('JGLOBAL_FIELD_NOT_SAVED');
 }
 ?>
 <div class="com-content-article item-page<?php echo $this->pageclass_sfx; ?>" itemscope itemtype="https://schema.org/Article">
@@ -73,7 +72,7 @@ if ($canEdit)
 
 	<?php if ($params->get('show_title')) : ?>
 	<div class="page-header">
-		<<?php echo $htag; ?> itemprop="headline">
+		<<?php echo $htag; ?> class="<?php echo $inlineEditClass ?>"  <?php echo $ArticleDataAttributes ?> itemprop="headline">
 			<?php echo $this->escape($this->item->title); ?>
 		</<?php echo $htag; ?>>
 		<?php if ($this->item->state == ContentComponent::CONDITION_UNPUBLISHED) : ?>
