@@ -453,28 +453,30 @@ class ArticleModel extends ItemModel
 	/**
 	 * Save Title of an article
 	 *
-	 * @param   integer  $pk     Article id
-	 * @param   string   $title  New title of the article
+	 * @param   integer  $pk        Article id
+	 * @param   string   $field     Field to be updated. Ex, title, or introtext.
+	 * @param   string   $newValue  New title of the article
 	 *
 	 * @return  boolean  True if successful, false otherwise
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	public function saveTitle(int $pk = null, string $title = null): bool
+	public function saveOne(int $pk = null, string $field, string $newValue = null): bool
 	{
-		if ($pk == null || $title == null)
+		if ($pk == null || $newValue == null)
 		{
 			return false;
 		}
 
 		$pk    = (string) $pk;
-		$title = (string) $title;
+		$field = (string) $field;
+		$newValue = (string) $newValue;
 
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
 
 		// Fields to update.
-		$fields = [ $db->quoteName('title') . ' = ' . $db->quote($title) ];
+		$fields = [ $db->quoteName($field) . ' = ' . $db->quote($newValue) ];
 
 		// Conditions for which records should be updated.
 		$conditions = [ $db->quoteName('id') . ' = ' . $pk ];

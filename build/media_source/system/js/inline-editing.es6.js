@@ -25,7 +25,7 @@
     // TextArea field
     textArea.value = oldContent;
     textArea.rows = 3;
-    textArea.style.width = 'auto';
+    textArea.style.width = '80%';
 
     // Cancel button
     cancelButtonIcon.classList.add('icon-times');
@@ -72,7 +72,7 @@
 
     // Wrap textArea and loader inside a div
     wrap.style.position = 'relative';
-    wrap.style.display = 'inline-block';
+    wrap.style.display = 'block';
     wrap.appendChild(buttons);
     wrap.appendChild(textArea);
     wrap.appendChild(loader);
@@ -97,7 +97,7 @@
 
   // Handle any text fields
   const addTextArea = (url, data, element) => {
-    const oldContent = element.innerText;
+    const oldContent = element.innerHTML.trim();
 
     const wrapAndTextArea = GetTextAreaWrapper(oldContent);
     if (!wrapAndTextArea) {
@@ -127,7 +127,8 @@
     // Send Ajax request and update front-end when user focuses out of textArea
     saveButton.addEventListener('click', () => {
       const newValue = textArea.value;
-      const dataWithValue = `${data}value=${newValue}`;
+      const itemprop = element.getAttribute('itemprop');
+      const dataWithValue = `${data}value=${newValue}&itemprop=${itemprop}`;
 
       saveButton.disabled = true;
       cancelButton.disabled = true;

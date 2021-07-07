@@ -119,7 +119,7 @@ if ($canEdit)
 	<?php if (isset ($this->item->toc)) :
 		echo $this->item->toc;
 	endif; ?>
-	<div itemprop="articleBody" class="com-content-article__body">
+	<div itemprop="articleBody" class="com-content-article__body <?php echo $inlineEditClass ?>"  <?php echo $ArticleDataAttributes ?>>
 		<?php echo $this->item->text; ?>
 	</div>
 

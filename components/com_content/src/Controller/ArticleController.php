@@ -415,18 +415,36 @@ class ArticleController extends FormController
 	{
 		$this->checkToken();
 
+		$itemprop = $this->input->getString('itemprop');
 		$articleId = $this->input->getInt('a_id');
-		$articleTitle = $this->input->getString('value');
+		$newValue = $this->input->getString('value');
 
-		if (!$articleId || !$articleTitle || !$this->allowEdit(['id' => $articleId]))
+		if (!$itemprop || !$articleId || !$newValue || !$this->allowEdit(['id' => $articleId]))
 		{
 			echo new JsonResponse(['saved' => false]);
 		}
 		else
 		{
+			$field = '';\
+
+			if ($itemprop == 'headline')
+			{
+				$field = 'title';
+			}
+			elseif ($itemprop == 'articleBody')
+			{
+				$field = 'introtext';
+			}
+			else
+			{
+				echo new JsonResponse(['saved' => false]);
+
+				return;
+			}
+
 			$model = $this->getModel($this->context);
 
-			if ($model->saveTitle($articleId, $articleTitle))
+			if ($model->saveOne($articleId, $field, $newValue))
 			{
 				echo new JsonResponse(['saved' => true]);
 			}
