@@ -425,7 +425,7 @@ class ArticleController extends FormController
 		}
 		else
 		{
-			$field = '';\
+			$field = '';
 
 			if ($itemprop == 'headline')
 			{
