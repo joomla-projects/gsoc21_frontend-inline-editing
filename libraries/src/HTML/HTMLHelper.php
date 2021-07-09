@@ -1256,6 +1256,7 @@ abstract class HTMLHelper
 		// Register messages to be used by javascript code
 		Text::script('JGLOBAL_SERVER_ERROR');
 		Text::script('JGLOBAL_FIELD_NOT_SAVED');
+		Text::script('JGLOBAL_EMPTY_FIELD');
 
 		$return  = 'data-inline_url="?option=' . $component . '&task=' . $controller . '.FEInlineEdition&format=json" ';
 		$data = '';

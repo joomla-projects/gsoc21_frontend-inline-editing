@@ -93,6 +93,8 @@
     cancelButton.classList.add('btn-danger');
     textArea.disabled = false;
     loader.classList.add('d-none');
+
+    textArea.focus();
   };
 
   // Handle any text fields
@@ -126,9 +128,21 @@
 
     // Send Ajax request and update front-end when user focuses out of textArea
     saveButton.addEventListener('click', () => {
-      const newValue = textArea.value;
+      const newValue = textArea.value.trim();
+      if (newValue === oldContent) {
+        wrap.remove();
+        element.classList.remove('d-none');
+        return;
+      }
+
       // Add checks and show warning. Empty titles not allowed.
       const itemprop = element.getAttribute('itemprop');
+      if (itemprop === 'headline' && newValue === '') {
+        Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_EMPTY_FIELD')] });
+        textArea.focus();
+        return;
+      }
+
       const dataWithValue = `${data}value=${newValue}&itemprop=${itemprop}`;
 
       saveButton.disabled = true;

@@ -17,7 +17,6 @@
       }
 
       const newValue = ['DIV', 'P'].includes(element.tagName) ? editor.getContent() : editor.getContent({ format: 'text' });
-      // Add checks. empty titles not allowed.
 
       const url = element.dataset.inline_url;
       let data = element.dataset.inline_data;
@@ -26,6 +25,12 @@
       }
 
       const itemprop = element.getAttribute('itemprop');
+      if (itemprop === 'headline' && newValue === '') {
+        Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_EMPTY_FIELD')] });
+        editor.focus();
+        return;
+      }
+
       data = `${data}${Joomla.getOptions('csrf.token', '')}=1&value=${newValue}&itemprop=${itemprop}`;
 
       Joomla.request({
