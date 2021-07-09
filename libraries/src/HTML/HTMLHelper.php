@@ -1248,6 +1248,7 @@ abstract class HTMLHelper
 		else
 		{
 			$wa->useScript('webcomponent.inline-editing');
+
 			// Add script options
 			$document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
 		}
