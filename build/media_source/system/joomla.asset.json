@@ -562,6 +562,29 @@
       ]
     },
     {
+      "name": "webcomponent.inline-editing-tinymce.es5",
+      "type": "script",
+      "uri": "system/inline-editing-tinymce-es5.min.js",
+      "attributes": {
+        "nomodule": true,
+        "defer": true
+      },
+      "dependencies": [
+        "core"
+      ]
+    },
+    {
+      "name": "webcomponent.inline-editing-tinymce",
+      "type": "script",
+      "uri": "system/inline-editing-tinymce.min.js",
+      "attributes": {
+        "type": "module"
+      },
+      "dependencies": [
+        "webcomponent.inline-editing-tinymce.es5"
+      ]
+    },
+    {
       "name": "webcomponent.inline-editing",
       "type": "style",
       "uri": "system/inline-editing.css"

@@ -52,22 +52,6 @@ if (empty($fields))
 	return;
 }
 
-$canEdit = $item->params->get('access-edit');
-if($canEdit)
-{
-	// Load inline editing script
-	$doc = Factory::getDocument();
-	$doc->getWebAssetManager()
-		->useStyle('webcomponent.inline-editing')
-		->useScript('webcomponent.inline-editing');
-	// Add script options
-	$doc->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
-
-	// Register messages to be used by javascript code
-	Text::script('JGLOBAL_SERVER_ERROR');
-	Text::script('JGLOBAL_FIELD_NOT_SAVED');
-}
-
 $output = array();
 
 foreach ($fields as $field)

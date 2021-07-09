@@ -417,7 +417,17 @@ class ArticleController extends FormController
 
 		$itemprop = $this->input->getString('itemprop');
 		$articleId = $this->input->getInt('a_id');
-		$newValue = $this->input->getString('value');
+
+		$newValue = '';
+
+		if ($itemprop == 'articleBody')
+		{
+			$newValue = $this->input->getRaw('value');
+		}
+		else
+		{
+			$newValue = $this->input->getString('value');
+		}
 
 		if (!$itemprop || !$articleId || !$newValue || !$this->allowEdit(['id' => $articleId]))
 		{

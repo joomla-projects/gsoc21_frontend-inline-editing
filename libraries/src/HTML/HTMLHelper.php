@@ -1234,6 +1234,28 @@ abstract class HTMLHelper
 	 */
 	public static function convertToDataAttributes(string $component, string $controller, $attribs = [])
 	{
+		// Load script
+		$app = Factory::getApplication();
+		$document = Factory::getDocument();
+		$wa = $document->getWebAssetManager();
+		$wa->useStyle('webcomponent.inline-editing');
+
+		if ($app->get('editor', '') == 'tinymce')
+		{
+			$wa->registerAndUseScript('tinymce', 'media/vendor/tinymce/tinymce.min.js')
+				->useScript('webcomponent.inline-editing-tinymce');
+		}
+		else
+		{
+			$wa->useScript('webcomponent.inline-editing');
+			// Add script options
+			$document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+		}
+
+		// Register messages to be used by javascript code
+		Text::script('JGLOBAL_SERVER_ERROR');
+		Text::script('JGLOBAL_FIELD_NOT_SAVED');
+
 		$return  = 'data-inline_url="?option=' . $component . '&task=' . $controller . '.FEInlineEdition&format=json" ';
 		$data = '';
 

@@ -127,6 +127,7 @@
     // Send Ajax request and update front-end when user focuses out of textArea
     saveButton.addEventListener('click', () => {
       const newValue = textArea.value;
+      // Add checks and show warning. Empty titles not allowed.
       const itemprop = element.getAttribute('itemprop');
       const dataWithValue = `${data}value=${newValue}&itemprop=${itemprop}`;
 

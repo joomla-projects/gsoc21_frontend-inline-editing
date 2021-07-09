@@ -38,20 +38,8 @@ $ArticleDataAttributes = '';
 $inlineEditClass = '';
 if ($canEdit)
 {
-	// Load script
-	$this->document->getWebAssetManager()
-		->useStyle('webcomponent.inline-editing')
-		->useScript('webcomponent.inline-editing');
-
 	$ArticleDataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_content', 'article', [ 'a_id' => $this->item->id ]);
 	$inlineEditClass = 'inline-editable-text';
-
-	// Add script options
-	$this->document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
-
-	// Register messages to be used by javascript code
-	Text::script('JGLOBAL_SERVER_ERROR');
-	Text::script('JGLOBAL_FIELD_NOT_SAVED');
 }
 ?>
 <div class="com-content-article item-page<?php echo $this->pageclass_sfx; ?>" itemscope itemtype="https://schema.org/Article">
