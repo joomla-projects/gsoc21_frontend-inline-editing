@@ -9,6 +9,9 @@
 defined('_JEXEC') or die;
 
 use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 // Check if we have all the data
 if (!array_key_exists('item', $displayData) || !array_key_exists('context', $displayData))
@@ -61,7 +64,7 @@ foreach ($fields as $field)
 
 	$class = $field->params->get('render_class');
 	$layout = $field->params->get('layout', 'render');
-	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field));
+	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field, 'item' => $item));
 
 	// If the content is empty do nothing
 	if (trim($content) === '')

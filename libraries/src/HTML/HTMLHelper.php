@@ -1220,6 +1220,58 @@ abstract class HTMLHelper
 	}
 
 	/**
+	 * Add data-attributes for the inline editing.
+	 *
+	 * @param   string  $component  com_content, com_fields, etc
+	 * @param   string  $controller  Article, field, etc
+	 * @param   mixed   $attribs  Additional HTML attributes required to make Ajax Request
+	 *                            Example: In case of Article title,
+	 *                                      $attribs = [a_id => 23].
+	 *
+	 * @return  string  Formatted Data attributes
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public static function convertToDataAttributes(string $component, string $controller, $attribs = [])
+	{
+		// Load script
+		$app = Factory::getApplication();
+		$document = Factory::getDocument();
+		$wa = $document->getWebAssetManager();
+		$wa->useStyle('webcomponent.inline-editing');
+
+		if ($app->get('editor', '') == 'tinymce')
+		{
+			$wa->registerAndUseScript('tinymce', 'media/vendor/tinymce/tinymce.min.js')
+				->useScript('webcomponent.inline-editing-tinymce');
+		}
+		else
+		{
+			$wa->useScript('webcomponent.inline-editing');
+
+			// Add script options
+			$document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+		}
+
+		// Register messages to be used by javascript code
+		Text::script('JGLOBAL_SERVER_ERROR');
+		Text::script('JGLOBAL_FIELD_NOT_SAVED');
+		Text::script('JGLOBAL_EMPTY_FIELD');
+
+		$return  = 'data-inline_url="?option=' . $component . '&task=' . $controller . '.FEInlineEdition&format=json" ';
+		$data = '';
+
+		foreach ($attribs as $key => $value)
+		{
+			$data = $data . $key . '=' . $value . '&';
+		}
+
+		$return = $return . ' data-inline_data="' . $data . '"';
+
+		return $return;
+	}
+
+	/**
 	 * Add a directory where HTMLHelper should search for helpers. You may
 	 * either pass a string or an array of directories.
 	 *

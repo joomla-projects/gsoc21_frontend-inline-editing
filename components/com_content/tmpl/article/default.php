@@ -32,6 +32,15 @@ $assocParam        = (Associations::isEnabled() && $params->get('show_associatio
 $currentDate       = Factory::getDate()->format('Y-m-d H:i:s');
 $isNotPublishedYet = $this->item->publish_up > $currentDate;
 $isExpired         = !is_null($this->item->publish_down) && $this->item->publish_down < $currentDate;
+
+// Enable frontend inline editing
+$ArticleDataAttributes = '';
+$inlineEditClass = '';
+if ($canEdit)
+{
+	$ArticleDataAttributes = HTMLHelper::_('convertToDataAttributes', 'com_content', 'article', [ 'a_id' => $this->item->id ]);
+	$inlineEditClass = 'inline-editable-text';
+}
 ?>
 <div class="com-content-article item-page<?php echo $this->pageclass_sfx; ?>" itemscope itemtype="https://schema.org/Article">
 	<meta itemprop="inLanguage" content="<?php echo ($this->item->language === '*') ? Factory::getApplication()->get('language') : $this->item->language; ?>">
@@ -51,7 +60,7 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 
 	<?php if ($params->get('show_title')) : ?>
 	<div class="page-header">
-		<<?php echo $htag; ?> itemprop="headline">
+		<<?php echo $htag; ?> class="<?php echo $inlineEditClass ?>"  <?php echo $ArticleDataAttributes ?> itemprop="headline">
 			<?php echo $this->escape($this->item->title); ?>
 		</<?php echo $htag; ?>>
 		<?php if ($this->item->state == ContentComponent::CONDITION_UNPUBLISHED) : ?>
@@ -98,7 +107,7 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 	<?php if (isset ($this->item->toc)) :
 		echo $this->item->toc;
 	endif; ?>
-	<div itemprop="articleBody" class="com-content-article__body">
+	<div itemprop="articleBody" class="com-content-article__body <?php echo $inlineEditClass ?>"  <?php echo $ArticleDataAttributes ?>>
 		<?php echo $this->item->text; ?>
 	</div>
 

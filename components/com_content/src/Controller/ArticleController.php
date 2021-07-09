@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Versioning\VersionableControllerTrait;
@@ -401,6 +402,67 @@ class ArticleController extends FormController
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Method to save article's title
+	 *
+	 * @return void
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public function FEInlineEdition()
+	{
+		$this->checkToken();
+
+		$itemprop = $this->input->getString('itemprop');
+		$articleId = $this->input->getInt('a_id');
+
+		$newValue = '';
+
+		if ($itemprop == 'articleBody')
+		{
+			$newValue = $this->input->getRaw('value');
+		}
+		else
+		{
+			$newValue = $this->input->getString('value');
+		}
+
+		if (!$itemprop || !$articleId || !$newValue || !$this->allowEdit(['id' => $articleId]))
+		{
+			echo new JsonResponse(['saved' => false]);
+		}
+		else
+		{
+			$field = '';
+
+			if ($itemprop == 'headline')
+			{
+				$field = 'title';
+			}
+			elseif ($itemprop == 'articleBody')
+			{
+				$field = 'introtext';
+			}
+			else
+			{
+				echo new JsonResponse(['saved' => false]);
+
+				return;
+			}
+
+			$model = $this->getModel($this->context);
+
+			if ($model->saveOne($articleId, $field, $newValue))
+			{
+				echo new JsonResponse(['saved' => true]);
+			}
+			else
+			{
+				echo new JsonResponse(['saved' => false]);
+			}
+		}
 	}
 
 	/**
