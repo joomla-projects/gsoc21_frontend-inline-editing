@@ -355,6 +355,21 @@ class ArticleController extends FormController
 	}
 
 	/**
+	 * Method to save a field for inline editing.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function saveInline($key = null, $urlVar = 'a_id')
+	{
+		parent::saveInline($key, $urlVar);
+	}
+
+	/**
 	 * Method to save a record.
 	 *
 	 * @param   string  $key     The name of the primary key of the URL variable.

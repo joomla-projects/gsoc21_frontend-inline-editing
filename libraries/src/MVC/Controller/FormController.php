@@ -542,6 +542,67 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	}
 
 	/**
+	 * Method to save a field for inline editing.
+	 * JSON Response: {'saved': true}  if successfully saved,
+	 *                {'saved': false} otherwise.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public function saveInline($key = null, $urlVar = null)
+	{
+		$this->app->noRedirect();
+
+		// Check for request forgeries.
+		if ($this->checkToken('post') == false)
+		{
+			return false;
+		}
+
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$data  = $this->input->post->get('jform', array(), 'array');
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+
+		$recordId = $this->input->getInt($urlVar);
+
+		// Load the form with data
+		$model->setState('article.id', $recordId);
+		$form = $model->getForm();
+		$oldData = $form->getData()->toArray();
+
+		$data = array_merge($oldData, $data);
+
+		foreach ($data as $key => $value)
+		{
+			if (is_array($value))
+			{
+				$data[$key] = array_merge($oldData[$key], $data[$key]);
+			}
+		}
+
+		// Update post request
+		$this->input->post->set('jform', $data);
+
+		// Call regular save method for the rest of the work
+		$return = $this->save($key, $urlVar);
+
+		return $return;
+	}
+
+	/**
 	 * Method to save a record.
 	 *
 	 * @param   string  $key     The name of the primary key of the URL variable.
