@@ -556,7 +556,8 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		// Check for request forgeries.
 		if ($this->checkToken('post', false) == false)
 		{
-			echo new JsonResponse(['saved' => false]);
+			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
+			echo new JsonResponse(null, null, true);
 			$this->app->close();
 		}
 
@@ -597,8 +598,12 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$this->input->post->set('jform', $data);
 
 		// Call regular save method for the rest of the work
-		$return = $this->save($key, $urlVar);
-		echo new JsonResponse(['saved' => $return]);
+		$saved = $this->save($key, $urlVar);
+
+		// Enqueue the redirect message
+		$this->app->enqueueMessage($this->message, $this->messageType);
+		echo new JsonResponse(null, null, !$saved);
+
 		$this->app->close();
 	}
 
