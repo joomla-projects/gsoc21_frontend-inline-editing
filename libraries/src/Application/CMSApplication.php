@@ -28,7 +28,6 @@ use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\CMS\Pathway\Pathway;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Profiler\Profiler;
-use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Router\Router;
 use Joomla\CMS\Session\MetadataManager;
@@ -80,14 +79,6 @@ abstract class CMSApplication extends WebApplication implements ContainerAwareIn
 	 * @since  4.0.0
 	 */
 	protected $clientId = null;
-
-	/**
-	 * Allow no redirects.
-	 *
-	 * @var   boolean
-	 * @since __DEPLOY_VERSION__
-	 */
-	protected $noRedirect = false;
 
 	/**
 	 * The application message queue.
@@ -973,11 +964,6 @@ abstract class CMSApplication extends WebApplication implements ContainerAwareIn
 		return false;
 	}
 
-	public function noRedirect()
-	{
-		$this->noRedirect = true;
-	}
-
 	/**
 	 * Redirect to another URL.
 	 *
@@ -994,13 +980,6 @@ abstract class CMSApplication extends WebApplication implements ContainerAwareIn
 	 */
 	public function redirect($url, $status = 303)
 	{
-		if ($this->noRedirect)
-		{
-			echo new JsonResponse('');
-
-			return;
-		}
-
 		// Persist messages if they exist.
 		if (\count($this->messageQueue))
 		{

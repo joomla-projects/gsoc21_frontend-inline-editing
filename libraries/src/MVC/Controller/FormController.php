@@ -19,6 +19,7 @@ use Joomla\CMS\Form\FormFactoryInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Input\Input;
@@ -552,12 +553,11 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	 */
 	public function saveInline($key = null, $urlVar = null)
 	{
-		$this->app->noRedirect();
-
 		// Check for request forgeries.
-		if ($this->checkToken('post') == false)
+		if ($this->checkToken('post', false) == false)
 		{
-			return false;
+			echo new JsonResponse(['saved' => false]);
+			$this->app->close();
 		}
 
 		$model = $this->getModel();
@@ -598,8 +598,8 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		// Call regular save method for the rest of the work
 		$return = $this->save($key, $urlVar);
-
-		return $return;
+		echo new JsonResponse(['saved' => $return]);
+		$this->app->close();
 	}
 
 	/**
