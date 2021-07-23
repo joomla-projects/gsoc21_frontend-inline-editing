@@ -437,6 +437,66 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	}
 
 	/**
+	 * Method to get a rendered form field.
+	 * JsonResponse: ['html' => rendered form field] if successful,
+	 * 				  ['error' => true] otherwise.
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getRenderedFormField($key = null, $urlVar = null)
+	{
+		// Check for request forgeries.
+		if ($this->checkToken('post', false) == false)
+		{
+			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
+			echo new JsonResponse(null, null, true);
+			$this->app->close();
+		}
+
+		$fieldName  = $this->input->post->getString('field_name');
+
+		if ($fieldName == null || $fieldName == '')
+		{
+			echo new JsonResponse(null, 'Empty field', true);
+			$this->app->close();
+		}
+
+		$model = $this->getModel();
+		$table = $model->getTable();
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+
+		$recordId = $this->input->getInt($urlVar);
+
+		// Load the form with data
+		$model->setState('article.id', $recordId);
+		$form = $model->getForm();
+
+		$html = $form->renderField($fieldName, null, null, ['hiddenLabel' => true]);
+
+		if ($html == null || $html == '')
+		{
+			echo new JsonResponse(null, 'Field doesn\'t exist.', true);
+			$this->app->close();
+		}
+
+		echo new JsonResponse(['html' => $html]);
+		$this->app->close();
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.

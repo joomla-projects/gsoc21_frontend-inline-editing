@@ -256,6 +256,19 @@ class ArticleController extends FormController
 	}
 
 	/**
+	 * Method to get a rendered form field.
+	 *
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getRenderedFormField($key = null, $urlVar = 'a_id')
+	{
+		parent::getRenderedFormField($key, $urlVar);
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
