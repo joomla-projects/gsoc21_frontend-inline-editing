@@ -456,6 +456,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		}
 
 		$fieldName  = $this->input->post->getString('field_name');
+		$fieldGroup = $this->input->post->getString('field_group');
 
 		if ($fieldName == null || $fieldName == '')
 		{
@@ -484,7 +485,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$model->setState('article.id', $recordId);
 		$form = $model->getForm();
 
-		$html = $form->renderField($fieldName, null, null, ['hiddenLabel' => true]);
+		$html = $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
 
 		if ($html == null || $html == '')
 		{

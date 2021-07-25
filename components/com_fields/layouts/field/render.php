@@ -8,6 +8,7 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 if (!array_key_exists('field', $displayData))
@@ -16,6 +17,7 @@ if (!array_key_exists('field', $displayData))
 }
 
 $field = $displayData['field'];
+$item  = $displayData['item'];
 $label = Text::_($field->label);
 $value = $field->value;
 $showLabel = $field->params->get('showlabel');
@@ -35,7 +37,7 @@ if ($value == '')
 <?php if ($prefix) : ?>
 	<span class="field-prefix"><?php echo htmlentities($prefix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>
-<span class="field-value"><?php echo $value; ?></span>
+<span class="field-value"><?php echo HTMLHelper::_('InlineEditing.render', $item, $value, $field->name, 'com_fields'); ?></span>
 <?php if ($suffix) : ?>
 	<span class="field-suffix"><?php echo htmlentities($suffix, ENT_QUOTES | ENT_IGNORE, 'UTF-8'); ?></span>
 <?php endif; ?>

@@ -52,7 +52,7 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 	<?php if ($params->get('show_title')) : ?>
 	<div class="page-header">
 		<<?php echo $htag; ?> itemprop="headline">
-			<?php echo $this->escape($this->item->title); ?>
+			<?php echo HTMLHelper::_('InlineEditing.render', $this->item, $this->escape($this->item->title), 'title'); ?>
 		</<?php echo $htag; ?>>
 		<?php if ($this->item->state == ContentComponent::CONDITION_UNPUBLISHED) : ?>
 			<span class="badge bg-warning text-light"><?php echo Text::_('JUNPUBLISHED'); ?></span>
@@ -99,7 +99,7 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 		echo $this->item->toc;
 	endif; ?>
 	<div itemprop="articleBody" class="com-content-article__body">
-		<?php echo $this->item->text; ?>
+		<?php echo HTMLHelper::_('InlineEditing.render', $this->item, $this->item->text, 'articletext'); ?>
 	</div>
 
 	<?php if ($info == 1 || $info == 2) : ?>
