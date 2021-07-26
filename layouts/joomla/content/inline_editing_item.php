@@ -17,18 +17,17 @@ $canEdit = $displayData['item']->params->get('access-edit');
 ?>
 
 <?php if ($canEdit && $enabled) : ?>
-	<form action="<?php echo $url; ?>" style="display: inline">
-		<span class="inline-editing-content">
-			<?php echo $display; ?>
-		</span>
-		<span class="inline-editing-input d-none"
+	<form class="inline-editing-form" action="<?php echo $url; ?>">
+		<div class="inline-editing-content">
+			<?php echo $content; ?>
+		</div>
+		<div class="inline-editing-input d-none"
 			data-inline-editing-field_name="<?php echo $fieldName; ?>"
 			data-inline-editing-field_group="<?php echo $fieldGroup; ?>">
-		</span>
-
+		</div>
 		<input type="hidden" name="task" value="<?php echo $controller; ?>.">
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 <?php else: ?>
-	<?php echo $display; ?>
+	<?php echo $content; ?>
 <?php endif; ?>

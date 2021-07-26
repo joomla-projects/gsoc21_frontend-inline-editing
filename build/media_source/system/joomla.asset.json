@@ -537,6 +537,34 @@
       "dependencies": [
         "webcomponent.toolbar-button-legacy"
       ]
+    },
+    {
+      "name": "webcomponent.inline-editing.es5",
+      "type": "script",
+      "uri": "system/inline-editing-es5.min.js",
+      "attributes": {
+        "nomodule": true,
+        "defer": true
+      },
+      "dependencies": [
+        "core"
+      ]
+    },
+    {
+      "name": "webcomponent.inline-editing",
+      "type": "script",
+      "uri": "system/inline-editing.min.js",
+      "attributes": {
+        "type": "module"
+      },
+      "dependencies": [
+        "webcomponent.inline-editing.es5"
+      ]
+    },
+    {
+      "name": "webcomponent.inline-editing",
+      "type": "style",
+      "uri": "system/inline-editing.css"
     }
   ]
 }

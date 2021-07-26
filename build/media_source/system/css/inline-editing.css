@@ -1,0 +1,12 @@
+.inline-editing-form,
+.inline-editing-content,
+.inline-editing-input {
+	display: inline-block;
+}
+
+.inline-editing-content:hover {
+	background-color: aliceblue;
+	/* Or we can use outline instead of changing background-color */
+	/* outline: 1px solid orange; */
+	border-radius: 2px;
+}

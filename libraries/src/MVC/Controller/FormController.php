@@ -447,6 +447,11 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	 */
 	public function getRenderedFormField($key = null, $urlVar = null)
 	{
+		if (!$this->app->isClient('site') || !$this->app->get('frontinlineediting', false))
+		{
+			$this->app->close();
+		}
+
 		// Check for request forgeries.
 		if ($this->checkToken('post', false) == false)
 		{
@@ -485,7 +490,9 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$model->setState('article.id', $recordId);
 		$form = $model->getForm();
 
-		$html = $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
+		ob_start();
+		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
+		$html = ob_get_clean();
 
 		if ($html == null || $html == '')
 		{
