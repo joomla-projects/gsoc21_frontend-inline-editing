@@ -1,23 +1,32 @@
 (() => {
   'use strict';
 
-  const forms = document.querySelectorAll('[class*="inline-editing-form"]');
+  // const addForm = (element, field) => {
+  // const dimensions = element.getBoundingClientRect();
+  // console.log(element, field);
+  // [TODO] create and add a form
+  // makeForm();
+  // append it to the body and give it an absolute position
+  // };
 
-  const addInputField = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const content = form.querySelector('[class*="inline-editing-content"]');
-    const input = form.querySelector('[class*="inline-editing-input"]');
+  const options = Joomla.getOptions('inline-editing');
+
+  const addInputField = (element) => {
+    const key = element.classList[1];
+    const data = options[key];
 
     // Prepare the form data
-    const formData = new FormData(form);
-    formData.append('field_name', input.dataset.inlineEditingField_name);
-    formData.append('field_group', input.dataset.inlineEditingField_group);
-    formData.set('task', `${formData.get('task')}getRenderedFormField`);
+    const formData = new FormData();
+    formData.append('field_name', data.fieldName);
+    if (data.fieldGroup != null) {
+      formData.append('field_group', data.fieldGroup);
+    }
+    formData.append('task', `${data.controller}.getRenderedFormField`);
+    formData.append(Joomla.getOptions('csrf.token'), '1');
 
     // Make the ajax call
     Joomla.request({
-      url: form.action,
+      url: data.url,
       method: 'POST',
       data: formData,
       onSuccess: (resp) => {
@@ -38,9 +47,7 @@
             Joomla.renderMessages(response.messages);
           }
         } else {
-          content.remove();
-          input.innerHTML = response.data.html;
-          input.classList.remove('d-none');
+          // addForm(element, response.data.html);
           // console.log(response.data.html);
         }
       },
@@ -50,12 +57,6 @@
     });
   };
 
-  forms.forEach((form) => {
-    const content = form.querySelector('[class*="inline-editing-content"]');
-
-    content.addEventListener('click', () => {
-      form.addEventListener('submit', addInputField);
-      form.requestSubmit();
-    });
-  });
+  const elements = document.querySelectorAll('[class*="inline-editable"]');
+  elements.forEach((element) => element.addEventListener('click', () => addInputField(element)));
 })();

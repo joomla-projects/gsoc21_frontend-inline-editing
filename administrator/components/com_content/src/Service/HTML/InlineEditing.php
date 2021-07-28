@@ -34,25 +34,34 @@ class InlineEditing
 	/**
 	 * Name of the frontend controller that has saveInline() method defined.
 	 *
-	 * @var     string
+	 * @var    string
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since  __DEPLOY_VERSION__
 	 */
 	private $controller = 'article';
 
 	/**
 	 * Global configuration option.
 	 *
-	 * @var     boolean
+	 * @var    boolean
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since  __DEPLOY_VERSION__
 	 */
 	private $enabled = false;
 
 	/**
+	 * Serial number of Inline editable field.
+	 *
+	 * @var    integer
+	 *
+	 * @since  __DEPLOY_VERSION__
+	 */
+	private $num = 1;
+
+	/**
 	 * Service constructor
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since  __DEPLOY_VERSION__
 	 */
 	public function __construct()
 	{
@@ -68,12 +77,13 @@ class InlineEditing
 	 * @param   string  $content     Original value that needs to be inline editable.
 	 * @param   string  $fieldName   Name of the corresponding form field.
 	 * @param   string  $fieldGroup  The group to which the form field belongs.
+	 * @param   string  $HtmlTag     HTML Tag to wrap the content.
 	 *
 	 * @return  string  $content wrapped inside inline editable container.
 	 *
 	 * @since  __DEPLOY_VERSION__
 	 */
-	public function render($item, string $content, string $fieldName, string $fieldGroup = null)
+	public function render($item, string $content, string $fieldName, string $fieldGroup = null, string $HtmlTag = "span")
 	{
 		if (!$content || !$fieldName || !$item)
 		{
@@ -93,16 +103,30 @@ class InlineEditing
 
 			// Add script options.
 			$document->addScriptOptions('inline-editing', ['icon' => Uri::root(true) . '/media/system/images/ajax-loader.gif']);
+
+			// Might be replaced with global inline editing registery
+			// or with something else if we define a library for inline editing.
+			$dataClass = 'ie-content-item-' . $this->num;
+			$this->num = $this->num + 1;
+
+			$document->addScriptOptions('inline-editing', [
+					$dataClass => [
+						'fieldName'  => $fieldName,
+						'fieldGroup' => $fieldGroup,
+						'url'        => $url,
+						'controller' => $this->controller,
+					],
+				]
+			);
 		}
 
-		return LayoutHelper::render('joomla.content.inline_editing_item',
-			['item'      => $item,
-			'content'    => $content,
-			'fieldName'  => $fieldName,
-			'fieldGroup' => $fieldGroup,
-			'url'        => $url,
-			'controller' => $this->controller,
-			'enabled'    => $this->enabled]
+		return LayoutHelper::render('joomla.content.inline_editing_item', [
+				'canEdit'   => $canEdit,
+				'content'   => $content,
+				'HtmlTag'   => $HtmlTag,
+				'dataClass' => $dataClass,
+				'enabled'   => $this->enabled,
+			]
 		);
 	}
 }
