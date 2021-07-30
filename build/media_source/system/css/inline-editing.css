@@ -1,6 +1,17 @@
 .inline-editable:hover {
 	/* We can use one of these to highlight the editable content. */
 	/* background-color: aliceblue; */
-	outline: 1px solid orange;
+	outline: 2px dashed orange;
+	border-radius: 2px;
+}
+
+.inline-editing-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3000;
+	background-color: #c9ebee;
+	outline: 3px solid #1a41f1;
+	padding: 2px;
 	border-radius: 2px;
 }
