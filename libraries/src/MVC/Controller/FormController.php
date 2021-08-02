@@ -491,7 +491,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$form = $model->getForm();
 
 		ob_start();
-		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
+		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true], true);
 		$html = ob_get_clean();
 
 		if ($html == null || $html == '')
@@ -629,9 +629,17 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 			$this->app->close();
 		}
 
+		$data = $this->input->post->get('jform', array(), 'array');
+
+		// Don't accept more than one field change at a time.
+		if (count($data) != 1 || (is_array($data[0]) && count($data[0]) != 1))
+		{
+			echo new JsonResponse(null, 'Can change only one field at a time.', true);
+			$this->app->close();
+		}
+
 		$model = $this->getModel();
 		$table = $model->getTable();
-		$data  = $this->input->post->get('jform', array(), 'array');
 
 		// Determine the name of the primary key for the data.
 		if (empty($key))
@@ -652,25 +660,55 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$form = $model->getForm();
 		$oldData = $form->getData()->toArray();
 
-		$data = array_merge($oldData, $data);
+		$processData = array_merge($oldData, $data);
 
-		foreach ($data as $key => $value)
+		foreach ($processData as $key => $value)
 		{
 			if (is_array($value))
 			{
-				$data[$key] = array_merge($oldData[$key], $data[$key]);
+				$processData[$key] = array_merge($oldData[$key], $processData[$key]);
 			}
 		}
 
 		// Update post request
-		$this->input->post->set('jform', $data);
+		$this->input->post->set('jform', $processData);
 
 		// Call regular save method for the rest of the work
-		$saved = $this->save($key, $urlVar);
+		$savedStatus = $this->save($key, $urlVar);
 
 		// Enqueue the redirect message
 		$this->app->enqueueMessage($this->message, $this->messageType);
-		echo new JsonResponse(null, null, !$saved);
+
+		if ($savedStatus)
+		{
+			$updatedForm = $model->getForm([], true, true);
+			$savedData   = $updatedForm->getData()->toArray();
+
+			$savedValue  = '';
+
+			foreach ($data as $key => $value)
+			{
+				if ($key == 'com_fields' && is_array($value))
+				{
+					foreach ($value as $key2 => $value2)
+					{
+						$savedValue = $savedData[$key][$key2];
+					}
+				}
+				else
+				{
+					$savedValue = $savedData[$key];
+				}
+
+				break;
+			}
+
+			echo new JsonResponse(['savedValue' => $savedValue]);
+		}
+		else
+		{
+			echo new JsonResponse(null, null, true);
+		}
 
 		$this->app->close();
 	}

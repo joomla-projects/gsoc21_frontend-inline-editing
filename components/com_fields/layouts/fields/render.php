@@ -61,7 +61,7 @@ foreach ($fields as $field)
 
 	$class = $field->params->get('render_class');
 	$layout = $field->params->get('layout', 'render');
-	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field, 'item' => $item));
+	$content = FieldsHelper::render($context, 'field.' . $layout, array('field' => $field));
 
 	// If the content is empty do nothing
 	if (trim($content) === '')

@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 $value = $field->value;
 
 if ($value == '')
@@ -21,4 +23,13 @@ if (is_array($value))
 	$value = implode(', ', $value);
 }
 
-echo htmlentities($value);
+$output = htmlentities($value);
+
+try
+{
+	echo HTMLHelper::_('InlineEditing.render', $item, $output, $field->name, 'com_fields');
+}
+catch (Exception $e)
+{
+	echo $output;
+}

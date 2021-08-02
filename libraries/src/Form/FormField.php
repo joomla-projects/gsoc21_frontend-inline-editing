@@ -1025,14 +1025,22 @@ abstract class FormField
 	/**
 	 * Method to get a control group with label and input.
 	 *
-	 * @param   array  $options  Options to be passed into the rendering of the field
+	 * @param   array    $options  Options to be passed into the rendering of the field
+	 * @param   boolean  $inline   Render the inline field.
 	 *
 	 * @return  string  A string containing the html for the control group
 	 *
 	 * @since   3.2
 	 */
-	public function renderField($options = array())
+	public function renderField($options = array(), bool $inline = false)
 	{
+		if ($inline)
+		{
+			$path         = explode(".", $this->layout);
+			$path[2]      = 'inline-' . $path[2];
+			$this->layout = implode('.', $path);
+		}
+
 		if ($this->hidden)
 		{
 			return $this->getInput();
