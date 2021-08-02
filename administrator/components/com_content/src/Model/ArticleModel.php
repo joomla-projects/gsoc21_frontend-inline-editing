@@ -477,6 +477,7 @@ class ArticleModel extends AdminModel implements WorkflowModelInterface
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   boolean  $clear     Optional. Default false. True if don't want the cached form.
 	 *
 	 * @return  Form|boolean  A Form object on success, false on failure
 	 *
@@ -484,10 +485,11 @@ class ArticleModel extends AdminModel implements WorkflowModelInterface
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
+		$clear = (func_num_args() > 2) ? func_get_arg(2) : false;
 		$app  = Factory::getApplication();
 
 		// Get the form.
-		$form = $this->loadForm('com_content.article', 'article', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_content.article', 'article', array('control' => 'jform', 'load_data' => $loadData), $clear);
 
 		if (empty($form))
 		{

@@ -31,18 +31,6 @@
     formData.append('task', `${data.controller}.saveInline`);
     formData.append(Joomla.getOptions('csrf.token'), '1');
 
-    // Get the updated value
-    const fieldName = `[${data.fieldName}]`;
-    const fieldGroup = ((data.fieldGroup != null) ? `[${data.fieldGroup}]` : '');
-
-    // [TODO] Get the right updated value.
-    const updatedValue = formData.get(`jform${fieldGroup}${fieldName}`);
-    // console.log(updatedValue);
-
-    // for (var pair of formData.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1]);
-    // }
-
     // Make the ajax call
     Joomla.request({
       url: data.url,
@@ -61,11 +49,19 @@
         if (response.message) {
           Joomla.renderMessages({ error: [response.message] });
         }
+
         if (response.messages) {
           Joomla.renderMessages(response.messages);
         }
+
         if (response.success === true) {
-          element.innerHTML = updatedValue;
+          const value = response.data.savedValue;
+
+          if (value !== null && value !== '') {
+            element.innerHTML = value;
+          } else {
+            // remove the whole field from the dom.
+          }
         }
       },
       onError: () => {

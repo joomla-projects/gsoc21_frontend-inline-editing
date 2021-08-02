@@ -217,6 +217,7 @@ class FormModel extends \Joomla\Component\Content\Administrator\Model\ArticleMod
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   boolean  $clear     Optional. Default false. True if don't want the cached form.
 	 *
 	 * @return  Form|boolean  A Form object on success, false on failure
 	 *
@@ -224,7 +225,8 @@ class FormModel extends \Joomla\Component\Content\Administrator\Model\ArticleMod
 	 */
 	public function getForm($data = [], $loadData = true)
 	{
-		$form = parent::getForm($data, $loadData);
+		$clear = (func_num_args() > 2) ? func_get_arg(2) : false;
+		$form  = parent::getForm($data, $loadData, $clear);
 
 		if (empty($form))
 		{
