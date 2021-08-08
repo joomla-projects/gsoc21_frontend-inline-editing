@@ -3,7 +3,7 @@
 
   const options = Joomla.getOptions('inline-editing');
 
-  document.body.innerHTML += '<form action="" class="inline-editing-container"></form>';
+  document.body.innerHTML += '<form action="" class="inline-editing-container form-validate form-vertical"></form>';
   const container = document.querySelector('.inline-editing-container');
   let selectedElement = null;
 
@@ -24,12 +24,19 @@
 
     const element = selectedElement;
     const key = element.classList[1];
+    const inputField = container.children[0].children[1].children[0];
     const data = options[key];
 
     // Prepare the form data
     const formData = new FormData(container);
     formData.append('task', `${data.controller}.saveInline`);
     formData.append(Joomla.getOptions('csrf.token'), '1');
+
+    if (document.formvalidator.isValid(container) === false) {
+      return;
+    }
+
+    inputField.disabled = true;
 
     // Make the ajax call
     Joomla.request({
@@ -62,34 +69,33 @@
           } else {
             // remove the whole field from the dom.
           }
+          element.classList.remove('d-none');
+          selectedElement = null;
+          resetContainer();
         }
       },
       onError: () => {
         Joomla.renderMessages({ error: ['Something went wrong!'] });
       },
+      onComplete: () => {
+        inputField.disabled = false;
+      },
     });
   });
 
-  document.addEventListener('click', () => {
-    container.requestSubmit();
-    selectedElement = null;
-    resetContainer();
-  });
+  document.addEventListener('click', () => container.requestSubmit());
 
-  const addToContainer = (element, field) => {
-    // Cover element with the container.
-    const cover = () => {
-      container.style.left = `${element.offsetLeft}px`;
-      container.style.top = `${element.offsetTop}px`;
-      container.style.minHeight = `${element.offsetHeight}px`;
-      container.style.minWidth = `${element.offsetWidth}px`;
-    };
-    cover();
-    window.addEventListener('resize', cover);
+  const addToContainer = (element, fieldHtml) => {
+    // Add container as a sibling of element
+    element.parentNode.insertBefore(container, element.nextSibling);
 
-    // Add field to the container.
-    container.innerHTML = field;
+    // Add field Html to the container.
+    container.innerHTML = fieldHtml;
     container.classList.remove('d-none');
+    element.classList.add('d-none');
+
+    const inputField = container.children[0].children[1].children[0];
+    inputField.focus();
   };
 
   const addInputField = (element) => {
@@ -144,5 +150,9 @@
   };
 
   const elements = document.querySelectorAll('[class*="inline-editable"]');
-  elements.forEach((element) => element.addEventListener('click', () => addInputField(element)));
+  elements.forEach((element) => element.addEventListener('click', () => {
+    if (selectedElement === null) {
+      addInputField(element);
+    }
+  }));
 })();

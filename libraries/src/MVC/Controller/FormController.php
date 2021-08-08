@@ -664,7 +664,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		foreach ($processData as $key => $value)
 		{
-			if (is_array($value))
+			if (is_array($value) && array_key_exists($key, $oldData))
 			{
 				$processData[$key] = array_merge($oldData[$key], $processData[$key]);
 			}

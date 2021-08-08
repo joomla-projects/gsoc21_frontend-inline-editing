@@ -99,6 +99,7 @@ class InlineEditing
 			$wa       = $document->getWebAssetManager();
 			$wa->useStyle('webcomponent.inline-editing')
 				->useScript('keepalive')
+				->useScript('form.validate')
 				->useScript('webcomponent.inline-editing');
 
 			// Add script options.
