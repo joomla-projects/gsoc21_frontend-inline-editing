@@ -632,7 +632,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$data = $this->input->post->get('jform', array(), 'array');
 
 		// Don't accept more than one field change at a time.
-		if (count($data) != 1 || (is_array($data[0]) && count($data[0]) != 1))
+		if (count($data) != 1 || (is_array(reset($data)) && count(reset($data)) != 1))
 		{
 			echo new JsonResponse(null, 'Can change only one field at a time.', true);
 			$this->app->close();
