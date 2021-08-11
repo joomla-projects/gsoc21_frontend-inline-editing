@@ -668,11 +668,11 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		$processData = array_merge($oldData, $data);
 
-		foreach ($processData as $key => $value)
+		foreach ($processData as $key_ => $value_)
 		{
-			if (is_array($value) && array_key_exists($key, $oldData))
+			if (is_array($value_) && array_key_exists($key_, $oldData))
 			{
-				$processData[$key] = array_merge($oldData[$key], $processData[$key]);
+				$processData[$key_] = array_merge($oldData[$key_], $processData[$key_]);
 			}
 		}
 
@@ -692,18 +692,18 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 			$savedValue  = '';
 
-			foreach ($data as $key => $value)
+			foreach ($data as $key_ => $value_)
 			{
-				if ($key == 'com_fields' && is_array($value))
+				if ($key_ == 'com_fields' && is_array($value_))
 				{
-					foreach ($value as $key2 => $value2)
+					foreach ($value_ as $key2 => $value2)
 					{
-						$savedValue = $savedData[$key][$key2];
+						$savedValue = $savedData[$key_][$key2];
 					}
 				}
 				else
 				{
-					$savedValue = $savedData[$key];
+					$savedValue = $savedData[$key_];
 				}
 
 				break;

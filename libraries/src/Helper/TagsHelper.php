@@ -1037,7 +1037,7 @@ class TagsHelper extends CMSHelper
 			}
 		}
 
-		if (\is_array($newTags) && \count($newTags) > 0 && $newTags[0] != '')
+		if (\is_array($newTags) && \count($newTags) > 0 && \reset($newTags) != '')
 		{
 			$result = $result && $this->addTagMapping($ucmId, $table, $newTags);
 		}
