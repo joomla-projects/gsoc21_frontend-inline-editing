@@ -4,6 +4,7 @@
   const options = Joomla.getOptions('inline-editing');
 
   let selectedElement = null;
+  let previousValue = null;
   document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
 
   document.body.innerHTML += '<div class="inline-editing-container"><form action="" class="inline-editing-form form-validate form-vertical"></form></div>';
@@ -146,6 +147,7 @@
           }
           element.classList.remove('d-none');
           selectedElement = null;
+          previousValue = null;
           document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
           hideContainer();
         } else {
@@ -170,11 +172,22 @@
   saveButton.addEventListener('click', () => form.requestSubmit());
 
   cancelButton.addEventListener('click', () => {
-    container.classList.add('d-none');
-    if (selectedElement) {
-      selectedElement.classList.remove('d-none');
-      selectedElement = null;
+    if (!selectedElement) {
+      return;
     }
+
+    const inputField = form.children[0].children[1].children[0];
+    if (previousValue !== inputField.value) {
+      if (!window.confirm("You've some unsaved changes.\nAre you really want to close the input field?")) {
+        inputField.focus();
+        return;
+      }
+    }
+
+    container.classList.add('d-none');
+    selectedElement.classList.remove('d-none');
+    selectedElement = null;
+    previousValue = null;
     document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
   });
 
@@ -188,6 +201,7 @@
     element.classList.add('d-none');
 
     const inputField = form.children[0].children[1].children[0];
+    previousValue = inputField.value;
     inputField.focus();
   };
 
