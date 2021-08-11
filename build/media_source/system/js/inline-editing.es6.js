@@ -247,6 +247,7 @@
       onError: () => {
         Joomla.renderMessages({ error: ['Something went wrong!'] });
         selectedElement = null;
+        hideLoader();
         document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
       },
     });

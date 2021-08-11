@@ -441,11 +441,14 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	 * JsonResponse: ['html' => rendered form field] if successful,
 	 * 				  ['error' => true] otherwise.
 	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
 	 * @return  void
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public function getRenderedFormField($key = null, $urlVar = null)
+	public function getRenderedFormField(string $key = null, string $urlVar = null): void
 	{
 		if (!$this->app->isClient('site') || !$this->app->get('frontinlineediting', false))
 		{
@@ -615,11 +618,14 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	 * JSON Response: {'saved': true}  if successfully saved,
 	 *                {'saved': false} otherwise.
 	 *
-	 * @return  boolean  True if successful, false otherwise.
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
 	 *
 	 * @since __DEPLOY_VERSION__
 	 */
-	public function saveInline($key = null, $urlVar = null)
+	public function saveInline(string $key = null, string $urlVar = null): void
 	{
 		// Check for request forgeries.
 		if ($this->checkToken('post', false) == false)

@@ -77,17 +77,17 @@ class InlineEditing
 	 * @param   string  $content     Original value that needs to be inline editable.
 	 * @param   string  $fieldName   Name of the corresponding form field.
 	 * @param   string  $fieldGroup  The group to which the form field belongs.
-	 * @param   string  $HtmlTag     HTML Tag to wrap the content.
+	 * @param   string  $htmlTag     HTML Tag to wrap the content.
 	 *
 	 * @return  string  $content wrapped inside inline editable container.
 	 *
 	 * @since  __DEPLOY_VERSION__
 	 */
-	public function render($item, string $content, string $fieldName, string $fieldGroup = null, string $HtmlTag = "span")
+	public function render(object $item, string $content, string $fieldName, string $fieldGroup = null, string $htmlTag = 'span'): string
 	{
 		if (!$content || !$fieldName || !$item)
 		{
-			return;
+			return '';
 		}
 
 		$url     = Uri::base() . 'index.php?option=com_content&a_id=' . $item->id;
@@ -125,7 +125,7 @@ class InlineEditing
 		return LayoutHelper::render('joomla.content.inline_editing_item', [
 				'canEdit'   => $canEdit,
 				'content'   => $content,
-				'HtmlTag'   => $HtmlTag,
+				'htmlTag'   => $htmlTag,
 				'dataClass' => $dataClass,
 				'enabled'   => $this->enabled,
 			]

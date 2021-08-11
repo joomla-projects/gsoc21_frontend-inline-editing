@@ -3,9 +3,7 @@
 }
 
 .inline-editable:hover {
-	/* We can use one of these to highlight the editable content. */
 	background-color: var(--inline-editable-bg);
-	/* outline: 2px dashed orange; */
 	border-radius: 4px;
 }
 
@@ -15,9 +13,7 @@
 }
 
 .inline-editing-form {
-	background-color: #c9ebee;
 	border: 3px solid #1a41f1;
-	display: inline-block;
 }
 
 .inline-editing-container div,
@@ -27,4 +23,8 @@
 	padding: 0;
 	font-size: inherit;
 	font-weight: inherit;
+}
+
+.inline-editing-container button {
+	font-size: initial;
 }

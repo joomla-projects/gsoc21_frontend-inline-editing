@@ -12,10 +12,10 @@ defined('_JEXEC') or die;
 extract($displayData);
 ?>
 
-<<?php echo $HtmlTag; ?>
+<<?php echo $htmlTag; ?>
 	<?php if ($canEdit && $enabled) : ?>
 		class="inline-editable <?php echo $dataClass ?>"
 	<?php endif; ?>
 	>
 	<?php echo $content; ?>
-</<?php echo $HtmlTag; ?>>
+</<?php echo $htmlTag; ?>>
