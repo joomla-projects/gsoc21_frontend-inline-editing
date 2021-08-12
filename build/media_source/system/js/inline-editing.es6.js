@@ -178,7 +178,7 @@
 
     const inputField = form.children[0].children[1].children[0];
     if (previousValue !== inputField.value) {
-      if (!window.confirm("Do you really want to discard your unsaved changes?")) {
+      if (!window.confirm('Do you really want to discard your unsaved changes?')) {
         inputField.focus();
         return;
       }
