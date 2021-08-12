@@ -17,4 +17,13 @@ if ($value == '')
 	return;
 }
 
-echo HTMLHelper::_('content.prepare', $value);
+$output = HTMLHelper::_('content.prepare', $value);
+
+try
+{
+	echo HTMLHelper::_('InlineEditing.render', $item, $output, $field->name, 'com_fields');
+}
+catch (Exception $e)
+{
+	echo $output;
+}

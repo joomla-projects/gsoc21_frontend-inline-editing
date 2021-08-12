@@ -17,7 +17,8 @@
 }
 
 .inline-editing-container div,
-.inline-editing-container input {
+.inline-editing-container input,
+.inline-editing-container textarea {
 	border: none;
 	margin: 0;
 	padding: 0;
