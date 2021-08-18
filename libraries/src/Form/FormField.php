@@ -1034,13 +1034,6 @@ abstract class FormField
 	 */
 	public function renderField($options = array(), bool $inline = false)
 	{
-		if ($inline)
-		{
-			$path         = explode(".", $this->layout);
-			$path[2]      = 'inline-' . $path[2];
-			$this->layout = implode('.', $path);
-		}
-
 		if ($this->hidden)
 		{
 			return $this->getInput();
