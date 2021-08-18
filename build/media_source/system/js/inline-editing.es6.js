@@ -10,6 +10,7 @@
   document.body.innerHTML += '<div class="inline-editing-container"><form action="" class="inline-editing-form form-validate form-vertical"></form></div>';
   const container = document.querySelector('.inline-editing-container');
   const form = document.querySelector('.inline-editing-form');
+  let inputField = null;
 
   const hideContainer = () => {
     container.classList.add('d-none');
@@ -99,6 +100,37 @@
   container.appendChild(buttons);
   appendLoader(container);
 
+  const format = (fieldHtml) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(fieldHtml, 'text/html');
+    const updatedField = doc.querySelector('.controls').children[0];
+
+    switch (inputField.tagName) {
+      case 'SELECT': {
+        const selectedOptions = updatedField.querySelectorAll('option:checked');
+        const display = [];
+
+        [].forEach.call(selectedOptions, (el) => {
+          display.push(el.text);
+        });
+
+        return display.join(', ');
+      }
+      case 'FIELDSET': {
+        const checkedOptions = updatedField.querySelectorAll('input:checked');
+        const display = [];
+
+        [].forEach.call(checkedOptions, (el) => {
+          display.push(el.labels[0].innerText.trim());
+        });
+
+        return display.join(', ');
+      }
+      default:
+        return updatedField.value;
+    }
+  };
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     if (selectedElement === null) {
@@ -108,11 +140,15 @@
     appendLoader(container, false);
     const element = selectedElement;
     const key = element.classList[1];
-    const inputField = form.children[0].children[1].children[0];
+    [inputField] = form.querySelector('.controls').children;
     const data = options[key];
 
     // Prepare the form data
     const formData = new FormData(form);
+    formData.append('field_name', data.fieldName);
+    if (data.fieldGroup != null) {
+      formData.append('field_group', data.fieldGroup);
+    }
     formData.append('task', `${data.controller}.saveInline`);
     formData.append(Joomla.getOptions('csrf.token'), '1');
 
@@ -138,13 +174,13 @@
         }
 
         if (response.success === true) {
-          const value = response.data.savedValue;
+          const value = format(response.data.html);
 
-          if (value !== null && value !== '') {
-            element.innerHTML = value;
-          } else {
+          element.innerHTML = value;
+          if (value === null || value === '') {
             // remove the whole field from the dom.
           }
+
           element.classList.remove('d-none');
           selectedElement = null;
           previousValue = null;
@@ -176,7 +212,7 @@
       return;
     }
 
-    const inputField = form.children[0].children[1].children[0];
+    [inputField] = form.querySelector('.controls').children;
     if (previousValue !== inputField.value) {
       if (!window.confirm('Do you really want to discard your unsaved changes?')) {
         inputField.focus();
@@ -200,7 +236,7 @@
     container.classList.remove('d-none');
     element.classList.add('d-none');
 
-    const inputField = form.children[0].children[1].children[0];
+    [inputField] = form.querySelector('.controls').children;
     previousValue = inputField.value;
     inputField.focus();
   };

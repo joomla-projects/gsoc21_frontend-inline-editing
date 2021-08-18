@@ -12,18 +12,27 @@
 	position: relative;
 }
 
-.inline-editing-form {
-	border: 3px solid #1a41f1;
-}
 
-.inline-editing-container div,
-.inline-editing-container input,
-.inline-editing-container textarea {
+.inline-editing-form,
+.inline-editing-form > div ,
+.inline-editing-form > div > div > input,
+.inline-editing-form > div > div > textarea,
+.inline-editing-form fieldset {
 	border: none;
 	margin: 0;
 	padding: 0;
 	font-size: inherit;
 	font-weight: inherit;
+}
+
+.inline-editing-form fieldset > div {
+	border: none;
+	margin-bottom: 0;
+	font-size: inherit;
+	font-weight: inherit;
+}
+.inline-editing-form {
+	border: 3px solid #1a41f1;
 }
 
 .inline-editing-container button {

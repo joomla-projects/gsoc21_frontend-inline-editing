@@ -637,8 +637,17 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		$data = $this->input->post->get('jform', array(), 'array');
 
+		$fieldName  = $this->input->post->getString('field_name');
+		$fieldGroup = $this->input->post->getString('field_group');
+
+		if ($fieldName == null || $fieldName == '')
+		{
+			echo new JsonResponse(null, 'Empty field', true);
+			$this->app->close();
+		}
+
 		// Don't accept more than one field change at a time.
-		if (count($data) != 1 || (is_array(reset($data)) && count(reset($data)) != 1))
+		if (count($data) > 1 || (is_array(reset($data)) && count(reset($data)) > 1))
 		{
 			echo new JsonResponse(null, 'Can change only one field at a time.', true);
 			$this->app->close();
@@ -676,6 +685,18 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 			}
 		}
 
+		if (count($data) == 0)
+		{
+			if ($fieldGroup == null || $fieldGroup == '')
+			{
+				unset($processData[$fieldName]);
+			}
+			else
+			{
+				unset($processData[$fieldGroup][$fieldName]);
+			}
+		}
+
 		// Update post request
 		$this->input->post->set('jform', $processData);
 
@@ -688,28 +709,12 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		if ($savedStatus)
 		{
 			$updatedForm = $model->getForm([], true, true);
-			$savedData   = $updatedForm->getData()->toArray();
 
-			$savedValue  = '';
+			ob_start();
+			echo $updatedForm->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true], true);
+			$html = ob_get_clean();
 
-			foreach ($data as $key_ => $value_)
-			{
-				if ($key_ == 'com_fields' && is_array($value_))
-				{
-					foreach ($value_ as $key2 => $value2)
-					{
-						$savedValue = $savedData[$key_][$key2];
-					}
-				}
-				else
-				{
-					$savedValue = $savedData[$key_];
-				}
-
-				break;
-			}
-
-			echo new JsonResponse(['savedValue' => $savedValue]);
+			echo new JsonResponse(['html' => $html]);
 		}
 		else
 		{
