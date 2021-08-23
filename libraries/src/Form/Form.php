@@ -565,23 +565,22 @@ class Form
 	/**
 	 * Method to get a control group with label and input.
 	 *
-	 * @param   string   $name     The name of the field for which to get the value.
-	 * @param   string   $group    The optional dot-separated form group path on which to get the value.
-	 * @param   mixed    $default  The optional default value of the field value is empty.
-	 * @param   array    $options  Any options to be passed into the rendering of the field
-	 * @param   boolean  $inline   Render the inline field.
+	 * @param   string  $name     The name of the field for which to get the value.
+	 * @param   string  $group    The optional dot-separated form group path on which to get the value.
+	 * @param   mixed   $default  The optional default value of the field value is empty.
+	 * @param   array   $options  Any options to be passed into the rendering of the field
 	 *
 	 * @return  string  A string containing the html for the control goup
 	 *
 	 * @since   3.2.3
 	 */
-	public function renderField($name, $group = null, $default = null, $options = array(), bool $inline = false)
+	public function renderField($name, $group = null, $default = null, $options = array())
 	{
 		$field = $this->getField($name, $group, $default);
 
 		if ($field)
 		{
-			return $field->renderField($options, $inline);
+			return $field->renderField($options);
 		}
 
 		return '';

@@ -223,10 +223,9 @@ class FormModel extends \Joomla\Component\Content\Administrator\Model\ArticleMod
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = [], $loadData = true)
+	public function getForm($data = [], $loadData = true, $clear = false)
 	{
-		$clear = (func_num_args() > 2) ? func_get_arg(2) : false;
-		$form  = parent::getForm($data, $loadData, $clear);
+		$form = parent::getForm($data, $loadData, $clear);
 
 		if (empty($form))
 		{

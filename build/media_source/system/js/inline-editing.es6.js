@@ -110,7 +110,7 @@
         const selectedOptions = updatedField.querySelectorAll('option:checked');
         const display = [];
 
-        [].forEach.call(selectedOptions, (el) => {
+        selectedOptions.forEach((el) => {
           display.push(el.text);
         });
 
@@ -120,7 +120,7 @@
         const checkedOptions = updatedField.querySelectorAll('input:checked');
         const display = [];
 
-        [].forEach.call(checkedOptions, (el) => {
+        checkedOptions.forEach((el) => {
           display.push(el.labels[0].innerText.trim());
         });
 
@@ -177,9 +177,6 @@
           const value = format(response.data.html);
 
           element.innerHTML = value;
-          if (value === null || value === '') {
-            // remove the whole field from the dom.
-          }
 
           element.classList.remove('d-none');
           selectedElement = null;
@@ -245,7 +242,6 @@
     selectedElement = element;
     document.documentElement.style.setProperty('--inline-editable-bg', 'inherit');
     appendLoader(element, false);
-    // return;
     const key = element.classList[1];
     const data = options[key];
 
@@ -285,20 +281,18 @@
             Joomla.renderMessages(response.messages);
           }
         } else {
-          hideLoader();
           // 1. Add to the DOM.
           addToContainer(element, response.data.html);
           // 2. Render field properly / Load scripts and styles
-
-          // 3. addForm(element, response.data.html);
-          // console.log(response.data.html);
         }
       },
       onError: () => {
         Joomla.renderMessages({ error: ['Something went wrong!'] });
         selectedElement = null;
-        hideLoader();
         document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
+      },
+      onComplete: () => {
+        hideLoader();
       },
     });
   };

@@ -456,7 +456,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		}
 
 		// Check for request forgeries.
-		if ($this->checkToken('post', false) == false)
+		if ($this->checkToken('post', false) === false)
 		{
 			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
 			echo new JsonResponse(null, null, true);
@@ -466,7 +466,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$fieldName  = $this->input->post->getString('field_name');
 		$fieldGroup = $this->input->post->getString('field_group');
 
-		if ($fieldName == null || $fieldName == '')
+		if ($fieldName === null || $fieldName === '')
 		{
 			echo new JsonResponse(null, 'Empty field', true);
 			$this->app->close();
@@ -494,10 +494,10 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 		$form = $model->getForm();
 
 		ob_start();
-		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true], true);
+		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
 		$html = ob_get_clean();
 
-		if ($html == null || $html == '')
+		if ($html === null || $html === '')
 		{
 			echo new JsonResponse(null, 'Field doesn\'t exist.', true);
 			$this->app->close();
@@ -628,19 +628,19 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	public function saveInline(string $key = null, string $urlVar = null): void
 	{
 		// Check for request forgeries.
-		if ($this->checkToken('post', false) == false)
+		if ($this->checkToken('post', false) === false)
 		{
 			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
 			echo new JsonResponse(null, null, true);
 			$this->app->close();
 		}
 
-		$data = $this->input->post->get('jform', array(), 'array');
+		$data = $this->input->post->get('jform', [], 'array');
 
 		$fieldName  = $this->input->post->getString('field_name');
 		$fieldGroup = $this->input->post->getString('field_group');
 
-		if ($fieldName == null || $fieldName == '')
+		if ($fieldName === null || $fieldName === '')
 		{
 			echo new JsonResponse(null, 'Empty field', true);
 			$this->app->close();
@@ -672,7 +672,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		// Load the form with data
 		$model->setState('article.id', $recordId);
-		$form = $model->getForm();
+		$form    = $model->getForm();
 		$oldData = $form->getData()->toArray();
 
 		$processData = array_merge($oldData, $data);
@@ -685,9 +685,9 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 			}
 		}
 
-		if (count($data) == 0)
+		if (count($data) === 0)
 		{
-			if ($fieldGroup == null || $fieldGroup == '')
+			if ($fieldGroup === null || $fieldGroup === '')
 			{
 				unset($processData[$fieldName]);
 			}
@@ -711,7 +711,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 			$updatedForm = $model->getForm([], true, true);
 
 			ob_start();
-			echo $updatedForm->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true], true);
+			echo $updatedForm->renderField($fieldName, $fieldGroup);
 			$html = ob_get_clean();
 
 			echo new JsonResponse(['html' => $html]);

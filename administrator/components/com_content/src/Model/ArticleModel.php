@@ -483,9 +483,8 @@ class ArticleModel extends AdminModel implements WorkflowModelInterface
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $clear = false)
 	{
-		$clear = (func_num_args() > 2) ? func_get_arg(2) : false;
 		$app  = Factory::getApplication();
 
 		// Get the form.

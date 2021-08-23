@@ -90,8 +90,8 @@ class InlineEditing
 			return '';
 		}
 
-		$url     = Uri::base() . 'index.php?option=com_content&a_id=' . $item->id;
-		$canEdit = $item->params->get('access-edit');
+		$url       = Uri::base() . 'index.php?option=com_content&a_id=' . $item->id;
+		$canEdit   = $item->params->get('access-edit');
 		$dataClass = '';
 
 		if ($canEdit && $this->enabled)
