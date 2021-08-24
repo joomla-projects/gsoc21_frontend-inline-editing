@@ -99,8 +99,7 @@ $isExpired         = !is_null($this->item->publish_down) && $this->item->publish
 		echo $this->item->toc;
 	endif; ?>
 	<div itemprop="articleBody" class="com-content-article__body">
-		<?php // echo HTMLHelper::_('InlineEditing.render', $this->item, $this->item->text, 'articletext', null, 'div'); ?>
-		<?php echo  $this->item->text; ?>
+		<?php echo $this->item->text; ?>
 	</div>
 
 	<?php if ($info == 1 || $info == 2) : ?>

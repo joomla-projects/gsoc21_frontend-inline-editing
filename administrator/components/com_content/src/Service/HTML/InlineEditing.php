@@ -11,6 +11,7 @@ namespace Joomla\Component\Content\Administrator\Service\HTML;
 
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -74,17 +75,17 @@ class InlineEditing
 	/**
 	 * Method to render an inline editable field
 	 *
-	 * @param   object  $item        The article information.
-	 * @param   string  $content     Original value that needs to be inline editable.
-	 * @param   string  $fieldName   Name of the corresponding form field.
-	 * @param   string  $fieldGroup  The group to which the form field belongs.
-	 * @param   string  $htmlTag     HTML Tag to wrap the content.
+	 * @param   \stdClass  $item        The article information.
+	 * @param   string     $content     Original value that needs to be inline editable.
+	 * @param   string     $fieldName   Name of the corresponding form field.
+	 * @param   string     $fieldGroup  The group to which the form field belongs.
+	 * @param   string     $htmlTag     HTML Tag to wrap the content.
 	 *
 	 * @return  string  $content wrapped inside inline editable container.
 	 *
 	 * @since  __DEPLOY_VERSION__
 	 */
-	public function render(object $item, string $content, string $fieldName, string $fieldGroup = null, string $htmlTag = 'span'): string
+	public function render(\stdClass $item, string $content, string $fieldName, string $fieldGroup = null, string $htmlTag = 'span'): string
 	{
 		if (!$content || !$fieldName || !$item)
 		{

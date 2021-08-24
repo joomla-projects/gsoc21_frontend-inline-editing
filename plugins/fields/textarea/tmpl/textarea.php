@@ -21,7 +21,7 @@ $output = HTMLHelper::_('content.prepare', $value);
 
 try
 {
-	echo HTMLHelper::_('InlineEditing.render', $item, $output, $field->name, 'com_fields');
+	echo HTMLHelper::_('InlineEditing.render', (object) $item, $output, $field->name, 'com_fields');
 }
 catch (Exception $e)
 {
