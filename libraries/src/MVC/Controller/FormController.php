@@ -19,6 +19,7 @@ use Joomla\CMS\Form\FormFactoryInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Input\Input;
@@ -436,6 +437,77 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	}
 
 	/**
+	 * Method to get a rendered form field.
+	 * JsonResponse: ['html' => rendered form field] if successful,
+	 * 				  ['error' => true] otherwise.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getRenderedFormField(string $key = null, string $urlVar = null): void
+	{
+		if (!$this->app->isClient('site') || !$this->app->get('frontinlineediting', false))
+		{
+			$this->app->close();
+		}
+
+		// Check for request forgeries.
+		if ($this->checkToken('post', false) === false)
+		{
+			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
+			echo new JsonResponse(null, null, true);
+			$this->app->close();
+		}
+
+		$fieldName  = $this->input->post->getString('field_name');
+		$fieldGroup = $this->input->post->getString('field_group');
+
+		if ($fieldName === null || $fieldName === '')
+		{
+			echo new JsonResponse(null, Text::_('JGLOBAL_EMPTY_FIELD'), true);
+			$this->app->close();
+		}
+
+		$model = $this->getModel();
+		$table = $model->getTable();
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+
+		$recordId = $this->input->getInt($urlVar);
+
+		// Load the form with data
+		$model->setState('article.id', $recordId);
+		$form = $model->getForm();
+
+		ob_start();
+		echo $form->renderField($fieldName, $fieldGroup, null, ['hiddenLabel' => true]);
+		$html = ob_get_clean();
+
+		if ($html === null || $html === '')
+		{
+			echo new JsonResponse(null, Text::_('JGLOBAL_NO_SUCH_FIELD'), true);
+			$this->app->close();
+		}
+
+		echo new JsonResponse(['html' => $html]);
+		$this->app->close();
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
@@ -539,6 +611,117 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	 */
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = array())
 	{
+	}
+
+	/**
+	 * Method to save a field for inline editing.
+	 * JSON Response: {'saved': true}  if successfully saved,
+	 *                {'saved': false} otherwise.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public function saveInline(string $key = null, string $urlVar = null): void
+	{
+		// Check for request forgeries.
+		if ($this->checkToken('post', false) === false)
+		{
+			$this->app->enqueueMessage(Text::_('JINVALID_TOKEN_NOTICE'), 'warning');
+			echo new JsonResponse(null, null, true);
+			$this->app->close();
+		}
+
+		$data = $this->input->post->get('jform', [], 'array');
+
+		$fieldName  = $this->input->post->getString('field_name');
+		$fieldGroup = $this->input->post->getString('field_group');
+
+		if ($fieldName === null || $fieldName === '')
+		{
+			echo new JsonResponse(null, Text::_('JGLOBAL_EMPTY_FIELD'), true);
+			$this->app->close();
+		}
+
+		// Don't accept more than one field change at a time.
+		if (count($data) > 1 || (is_array(reset($data)) && count(reset($data)) > 1))
+		{
+			echo new JsonResponse(null, Text::_('JGLOBAL_WARNING_ONLY_ONE_EDIT'), true);
+			$this->app->close();
+		}
+
+		$model = $this->getModel();
+		$table = $model->getTable();
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+
+		$recordId = $this->input->getInt($urlVar);
+
+		// Load the form with data
+		$model->setState('article.id', $recordId);
+		$form    = $model->getForm();
+		$oldData = $form->getData()->toArray();
+
+		$processData = array_merge($oldData, $data);
+
+		foreach ($processData as $pdk => $pdv)
+		{
+			if (is_array($pdv) && array_key_exists($pdk, $oldData))
+			{
+				$processData[$pdk] = array_merge($oldData[$pdk], $processData[$pdk]);
+			}
+		}
+
+		if (count($data) === 0)
+		{
+			if ($fieldGroup === null || $fieldGroup === '')
+			{
+				unset($processData[$fieldName]);
+			}
+			else
+			{
+				unset($processData[$fieldGroup][$fieldName]);
+			}
+		}
+
+		// Update post request
+		$this->input->post->set('jform', $processData);
+
+		// Call regular save method for the rest of the work
+		$savedStatus = $this->save($key, $urlVar);
+
+		// Enqueue the redirect message
+		$this->app->enqueueMessage($this->message, $this->messageType);
+
+		if ($savedStatus)
+		{
+			$updatedForm = $model->getForm([], true, true);
+
+			ob_start();
+			echo $updatedForm->renderField($fieldName, $fieldGroup);
+			$html = ob_get_clean();
+
+			echo new JsonResponse(['html' => $html]);
+		}
+		else
+		{
+			echo new JsonResponse(null, null, true);
+		}
+
+		$this->app->close();
 	}
 
 	/**

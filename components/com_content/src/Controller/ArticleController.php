@@ -256,6 +256,21 @@ class ArticleController extends FormController
 	}
 
 	/**
+	 * Method to get a rendered form field.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getRenderedFormField($key = null, $urlVar = 'a_id'): void
+	{
+		parent::getRenderedFormField($key, $urlVar);
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
@@ -352,6 +367,21 @@ class ArticleController extends FormController
 		{
 			return base64_decode($return);
 		}
+	}
+
+	/**
+	 * Method to save a field for inline editing.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function saveInline($key = null, $urlVar = 'a_id'): void
+	{
+		parent::saveInline($key, $urlVar);
 	}
 
 	/**

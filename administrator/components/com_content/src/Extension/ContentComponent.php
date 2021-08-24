@@ -33,6 +33,7 @@ use Joomla\CMS\Workflow\WorkflowServiceTrait;
 use Joomla\Component\Content\Administrator\Helper\ContentHelper;
 use Joomla\Component\Content\Administrator\Service\HTML\AdministratorService;
 use Joomla\Component\Content\Administrator\Service\HTML\Icon;
+use Joomla\Component\Content\Administrator\Service\HTML\InlineEditing;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -115,6 +116,7 @@ class ContentComponent extends MVCComponent implements
 	public function boot(ContainerInterface $container)
 	{
 		$this->getRegistry()->register('contentadministrator', new AdministratorService);
+		$this->getRegistry()->register('InlineEditing', new InlineEditing);
 		$this->getRegistry()->register('contenticon', new Icon($container->get(SiteApplication::class)));
 
 		// The layout joomla.content.icons does need a general icon service

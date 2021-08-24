@@ -8,6 +8,7 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 $value = $field->value;
@@ -29,4 +30,13 @@ foreach ($options as $optionValue => $optionText)
 	}
 }
 
-echo htmlentities(implode(', ', $texts));
+$output = htmlentities(implode(', ', $texts));
+
+try
+{
+	echo HTMLHelper::_('InlineEditing.render', (object) $item, $output, $field->name, 'com_fields');
+}
+catch (Exception $e)
+{
+	echo $output;
+}
