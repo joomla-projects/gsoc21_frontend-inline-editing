@@ -468,7 +468,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		if ($fieldName === null || $fieldName === '')
 		{
-			echo new JsonResponse(null, 'Empty field', true);
+			echo new JsonResponse(null, Text::_('JGLOBAL_EMPTY_FIELD'), true);
 			$this->app->close();
 		}
 
@@ -499,7 +499,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		if ($html === null || $html === '')
 		{
-			echo new JsonResponse(null, 'Field doesn\'t exist.', true);
+			echo new JsonResponse(null, Text::_('JGLOBAL_NO_SUCH_FIELD'), true);
 			$this->app->close();
 		}
 
@@ -642,14 +642,14 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 
 		if ($fieldName === null || $fieldName === '')
 		{
-			echo new JsonResponse(null, 'Empty field', true);
+			echo new JsonResponse(null, Text::_('JGLOBAL_EMPTY_FIELD'), true);
 			$this->app->close();
 		}
 
 		// Don't accept more than one field change at a time.
 		if (count($data) > 1 || (is_array(reset($data)) && count(reset($data)) > 1))
 		{
-			echo new JsonResponse(null, 'Can change only one field at a time.', true);
+			echo new JsonResponse(null, Text::_('JGLOBAL_WARNING_ONLY_ONE_EDIT'), true);
 			$this->app->close();
 		}
 

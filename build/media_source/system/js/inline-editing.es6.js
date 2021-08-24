@@ -169,7 +169,7 @@
         try {
           response = JSON.parse(resp);
         } catch (e) {
-          Joomla.renderMessages({ error: ['Invalid response.'] });
+          Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_SERVER_ERROR')] });
           return;
         }
 
@@ -193,7 +193,7 @@
         }
       },
       onError: () => {
-        Joomla.renderMessages({ error: ['Something went wrong!'] });
+        Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_AJAX_FAILED')] });
       },
       onComplete: () => {
         inputField.disabled = false;
@@ -211,7 +211,7 @@
 
     [inputField] = form.querySelector('.controls').children;
     if (previousValue !== inputField.value) {
-      if (!window.confirm('Do you really want to discard your unsaved changes?')) {
+      if (!window.confirm(Joomla.Text._('JGLOBAL_DISCARD_WORK_WARNING'))) {
         inputField.focus();
         return;
       }
@@ -265,7 +265,7 @@
         try {
           response = JSON.parse(resp);
         } catch (e) {
-          Joomla.renderMessages({ error: ['Invalid response.'] });
+          Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_SERVER_ERROR')] });
           selectedElement = null;
           document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
           return;
@@ -287,7 +287,7 @@
         }
       },
       onError: () => {
-        Joomla.renderMessages({ error: ['Something went wrong!'] });
+        Joomla.renderMessages({ error: [Joomla.Text._('JGLOBAL_AJAX_FAILED')] });
         selectedElement = null;
         document.documentElement.style.setProperty('--inline-editable-bg', 'blanchedalmond');
       },

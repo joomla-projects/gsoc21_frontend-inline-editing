@@ -12,6 +12,7 @@ namespace Joomla\Component\Content\Administrator\Service\HTML;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
 
@@ -96,6 +97,12 @@ class InlineEditing
 
 		if ($canEdit && $this->enabled)
 		{
+			// Register messages to be used by javascript code
+			Text::script('JGLOBAL_SERVER_ERROR');
+			Text::script('JGLOBAL_AJAX_FAILED');
+			Text::script('JGLOBAL_DISCARD_WORK_WARNING');
+
+			// Add scripts
 			$document = $this->app->getDocument();
 			$wa       = $document->getWebAssetManager();
 			$wa->useStyle('webcomponent.inline-editing')
